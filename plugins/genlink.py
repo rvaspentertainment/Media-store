@@ -32,27 +32,42 @@ async def allowed(_, __, message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+from pyrogram.enums import MessageMediaType
+
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
-        msuid = media.caption 
-        username = (await bot.get_me()).username
+        # Get the media type and ensure it exists
         file_type = message.media
-        file_id, ref = unpack_new_file_id((getattr(message, file_type.value)).file_id)
-        string = 'file_'
-        string += file_id
+        if not file_type:
+            raise ValueError("Message does not contain valid media.")
+
+        # Access the caption and user ID
+        msuid = message.caption  # Use `message.caption` directly
+        username = (await bot.get_me()).username
+
+        # Get file ID and prepare encoding
+        file_id, ref = unpack_new_file_id(getattr(message, file_type.value).file_id)
+        string = 'file_' + file_id
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+
+        # Get user details
         user_id = message.from_user.id
         user = await get_user(msuid)
-        share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
-        if user["base_site"] and user["shortener_api"] != None:
-            short_link = await get_short_link(user, share_link)
-            await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
-        else:
-            await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
-    except Exception as e:
-        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
+        # Generate the share link
+        share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
+
+        # Check if the user has a shortener API
+        if user.get("base_site") and user.get("shortener_api"):
+            short_link = await get_short_link(user, share_link)
+            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
+        else:
+            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
+
+    except Exception as e:
+        # Handle errors and log to a specific chat
+        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
         
   
 
