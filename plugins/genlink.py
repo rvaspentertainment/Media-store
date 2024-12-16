@@ -50,12 +50,7 @@ async def incoming_gen_link(bot, message):
     else:
         await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
         
-  userinfobot:
-Id: -1002400439772
-Title: Media store
-
-Id: -1002396912415
-Title: Media store link
+  
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
