@@ -34,21 +34,25 @@ async def allowed(_, __, message):
 
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
-    msuid = media.caption 
-    username = (await bot.get_me()).username
-    file_type = message.media
-    file_id, ref = unpack_new_file_id((getattr(message, file_type.value)).file_id)
-    string = 'file_'
-    string += file_id
-    outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
-    user_id = message.from_user.id
-    user = await get_user(msuid)
-    share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
-    if user["base_site"] and user["shortener_api"] != None:
-        short_link = await get_short_link(user, share_link)
-        await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
-    else:
-        await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
+    try:
+        msuid = media.caption 
+        username = (await bot.get_me()).username
+        file_type = message.media
+        file_id, ref = unpack_new_file_id((getattr(message, file_type.value)).file_id)
+        string = 'file_'
+        string += file_id
+        outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+        user_id = message.from_user.id
+        user = await get_user(msuid)
+        share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
+        if user["base_site"] and user["shortener_api"] != None:
+            short_link = await get_short_link(user, share_link)
+            await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
+        else:
+            await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
+    except Exception as e:
+        await message.reply(f"An error occurred: {str(e)}")
+
         
   
 
