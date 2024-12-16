@@ -38,7 +38,7 @@ from pyrogram.enums import MessageMediaType
 async def incoming_gen_link(bot, message):
     try:
         # Get the media type and ensure it exists
-        file_type = message.media
+        file_type = message.media(document, video, audio) 
         if not file_type:
             raise ValueError("Message does not contain valid media.")
 
