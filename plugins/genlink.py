@@ -53,7 +53,7 @@ async def incoming_media(bot, message):
         user_id = message.from_user.id
         media = message.document or message.video or message.audio
         caption = f"Media from user {user_id}"
-        await bot.send_media(-1002400439772, media, caption=caption)
+        await bot.send_message(-1002400439772, media, caption=caption)
     except Exception as e:
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
