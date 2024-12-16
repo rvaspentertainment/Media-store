@@ -42,14 +42,20 @@ async def incoming_gen_link(bot, message):
     string += file_id
     outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
     user_id = message.from_user.id
-    user = await get_user(user_id)
+    user = await get_user(msuid)
     share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
     if user["base_site"] and user["shortener_api"] != None:
         short_link = await get_short_link(user, share_link)
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>")
-else:
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>")
+        await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
+    else:
+        await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
         
+  userinfobot:
+Id: -1002400439772
+Title: Media store
+
+Id: -1002396912415
+Title: Media store link
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
