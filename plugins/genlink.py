@@ -51,7 +51,7 @@ async def incoming_gen_link(bot, message):
         else:
             await Client.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
     except Exception as e:
-        await message.reply(f"An error occurred: {str(e)}")
+        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
         
   
