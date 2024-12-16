@@ -386,7 +386,7 @@ async def start(client, message):
                         )
                 except Exception as e:
                     logger.exception(e)
-                    await message.reply("Error sending cached media!"
+                    await message.reply("Error sending cached media!") 
                                                 
         except IndexError:
             await message.reply("Invalid start command format!")
