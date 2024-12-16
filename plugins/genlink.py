@@ -36,27 +36,27 @@ async def allowed(_, __, message):
 # Function to handle incoming text message
 @Client.on_message(filters.text & filters.chat(-1002396912415))
 async def incoming_gen_link(bot, message):
-    # Example text: 12345-abcd12345
-    text = message.text
-    msuid, file_link = text.split('-')  # Split the text into msuid and file link
-    msuid = msuid.strip()  # User ID
-    file_link = file_link.strip()  # File link
-    
-    # Send the file link to the user (msuid)
-    await bot.send_message(msuid, f"Here is your file link: {file_link}")
+    try:
+        text = message.text
+        msuid, file_link = text.split('-')  # Split the text into msuid and file link
+        msuid = msuid.strip()  # User ID
+        file_link = file_link.strip()  # File link
+        await bot.send_message(msuid, f"Here is your file link: {file_link}")
+    except Exception as e:
+        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
+
 
 # Function to handle incoming media and forward it to a channel with a caption
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.private)
 async def incoming_media(bot, message):
-    # Get the user's ID and media
-    user_id = message.from_user.id
-    media = message.document or message.video or message.audio
+    try:
+        user_id = message.from_user.id
+        media = message.document or message.video or message.audio
+        caption = f"Media from user {user_id}"
+        await bot.send_media(-1002400439772, media, caption=caption)
+    except Exception as e:
+        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
-    # Forward media to the channel with a caption that includes the user's ID
-    caption = f"Media from user {user_id}"
-    
-    # Forward the media to the channel (-1002159286220)
-    await bot.send_media(-1002400439772, media, caption=caption)
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
