@@ -32,26 +32,31 @@ async def allowed(_, __, message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@Client.on_message((filters.document | filters.video | filters.audio) & filters.private & filters.create(allowed))
+
+# Function to handle incoming text message
+@Client.on_message(filters.text & filters.chat(-1002396912415))
 async def incoming_gen_link(bot, message):
-    username = (await bot.get_me()).username
-    file_type = message.media
-    file_id, ref = unpack_new_file_id((getattr(message, file_type.value)).file_id)
-    string = 'file_'
-    string += file_id
-    outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+    # Example text: 12345-abcd12345
+    text = message.text
+    msuid, file_link = text.split('-')  # Split the text into msuid and file link
+    msuid = msuid.strip()  # User ID
+    file_link = file_link.strip()  # File link
+    
+    # Send the file link to the user (msuid)
+    await bot.send_message(msuid, f"Here is your file link: {file_link}")
+
+# Function to handle incoming media and forward it to a channel with a caption
+@Client.on_message((filters.document | filters.video | filters.audio) & filters.private)
+async def incoming_media(bot, message):
+    # Get the user's ID and media
     user_id = message.from_user.id
-    user = await get_user(user_id)
-    if WEBSITE_URL_MODE == True:
-        share_link = f"{WEBSITE_URL}?Tech_VJ={outstr}"
-    else:
-        share_link = f"https://t.me/{username}?start={outstr}"
-    if user["base_site"] and user["shortener_api"] != None:
-        short_link = await get_short_link(user, share_link)
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>")
-    else:
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>")
-        
+    media = message.document or message.video or message.audio
+
+    # Forward media to the channel with a caption that includes the user's ID
+    caption = f"Media from user {user_id}"
+    
+    # Forward the media to the channel (-1002159286220)
+    await bot.send_media(-1002400439772, media, caption=caption)
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
