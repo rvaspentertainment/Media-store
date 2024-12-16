@@ -38,7 +38,12 @@ from pyrogram.enums import MessageMediaType
 async def incoming_gen_link(bot, message):
     try:
         # Get the media type and ensure it exists
-        
+        if message.video:
+            file_type = "video"
+        elif message.document:
+            file_type = "document"
+        elif message.audio:
+            file_type = "audio"
         # Access the caption and user ID
         msuid = message.caption  # Use `message.caption` directly
         username = (await bot.get_me()).username
