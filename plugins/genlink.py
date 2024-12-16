@@ -46,17 +46,23 @@ async def incoming_gen_link(bot, message):
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
 
-# Function to handle incoming media and forward it to a channel with a caption
+
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.private)
 async def incoming_media(bot, message):
     try:
         user_id = message.from_user.id
         media = message.document or message.video or message.audio
         caption = f"{user_id}"
-        await bot.send_message(-1002400439772, media, caption=caption)
+        
+        if message.document:
+            await bot.send_document(-1002400439772, document=media.file_id, caption=caption)
+        elif message.video:
+            await bot.send_video(-1002400439772, video=media.file_id, caption=caption)
+        elif message.audio:
+            await bot.send_audio(-1002400439772, audio=media.file_id, caption=caption)
+            
     except Exception as e:
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
-
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
