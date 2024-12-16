@@ -386,12 +386,13 @@ async def start(client, message):
                         )
                 except Exception as e:
                     logger.exception(e)
-                    await message.reply("Error sending cached media!")
-    except IndexError:
-        await message.reply("Invalid start command format!")
-    except Exception as e:
-        logger.exception(e)
-        await message.reply("An unexpected error occurred!")
+                    await message.reply("Error sending cached media!"
+                                                
+        except IndexError:
+            await message.reply("Invalid start command format!")
+        except Exception as e:
+            logger.exception(e)
+            await message.reply("An unexpected error occurred!")
         
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
