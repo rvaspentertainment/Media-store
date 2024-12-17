@@ -33,7 +33,6 @@ async def allowed(_, __, message):
 # Ask Doubt on telegram @KingVJ01
 
 from pyrogram.enums import MessageMediaType
-
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
@@ -55,15 +54,12 @@ async def incoming_gen_link(bot, message):
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
         
-        # Get user information
-        if message.video:
-            msuid = int(video.caption)
-        elif message.document:
-            msuid = int(document.caption)
-        elif message.audio:
-            msuid = int(audio.caption)
+        # Get user ID from caption
+        if message.caption:  # Ensure caption exists
+            msuid = int(message.caption)
         else:
-            none
+            raise ValueError("Caption is missing or invalid for extracting user ID.")
+        
         user = await get_user(msuid)
 
         # Generate the share link
@@ -79,8 +75,6 @@ async def incoming_gen_link(bot, message):
     except Exception as e:
         # Handle errors and log to a specific chat
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
-
-
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
     username = (await bot.get_me()).username
