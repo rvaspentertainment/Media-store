@@ -48,8 +48,8 @@ async def incoming_gen_link(bot, message):
         else:
             raise ValueError("Unsupported media type.")
         
-        # Extract file ID and generate encoded string
-        file_id, ref = unpack_new_file_id((getattr(message, file_type.value)).file_id)
+        media = getattr(message, file_type)  # Access the correct media type
+        file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
         
