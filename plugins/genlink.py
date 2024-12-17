@@ -34,7 +34,7 @@ async def allowed(_, __, message):
 
 from pyrogram.enums import MessageMediaType
 
-@Client.on_message((filters.document | filters.video | filters.audio) & filters.private & filters.create(allowed))
+@Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
         username = (await bot.get_me()).username
