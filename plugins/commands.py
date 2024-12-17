@@ -81,7 +81,7 @@ async def start(client, message):
         ttxt = translate_text(txt, user_id) 
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=ttxt
+            caption=ttxt,
             reply_markup=reply_markup
         )
         return
