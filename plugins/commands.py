@@ -406,12 +406,11 @@ async def start(client, message):
                     )
             except Exception as e:
                 logger.exception(e)
-                await message.reply("Error sending cached media!") 
-                                                
+                await message.reply("Error sending cached media!")                                      
         
-    except Exception as e:
-        logger.exception(e)
-        await message.reply("An unexpected error occurred!")
+        except Exception as e:
+            logger.exception(e)
+            await message.reply("An unexpected error occurred!")
         
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
