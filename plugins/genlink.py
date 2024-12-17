@@ -57,11 +57,11 @@ async def incoming_gen_link(bot, message):
         
         # Get user information
         if message.video:
-            msuid = "video.caption"
+            msuid = int(video.caption)
         elif message.document:
-            msuid = "document.caption"
+            msuid = int(document.caption)
         elif message.audio:
-            msuid = "audio.caption"
+            msuid = int(audio.caption)
         else:
             none
         user = await get_user(msuid)
