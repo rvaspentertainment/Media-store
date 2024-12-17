@@ -335,7 +335,7 @@ async def start(client, message):
     return
         
     
-    elif data.split("-", 1)[0] == "store":
+    elif data.split("-", 1)[0] == "s":
         try:
             parts = data.split("-")
             msuid = parts[1]  # Extract "12345"
