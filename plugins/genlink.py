@@ -56,38 +56,30 @@ async def incoming_gen_link(bot, message):
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
         
         # Get user information
-        user_id = message.from_user.id
-        user = await get_user(user_id)
-        
-        # Generate share link
-        if WEBSITE_URL_MODE:
-            share_link = f"{WEBSITE_URL}?Tech_VJ={outstr}"
+        if message.video:
+            msuid = "video.caption"
+        elif message.document:
+            msuid = "document.caption"
+        elif message.audio:
+            msuid = "audio.caption"
         else:
-            share_link = f"https://t.me/{username}?start={outstr}"
-        
-        # Determine target chat for the message
-        target_chat_id = -1002396912415  # Replace with your desired chat ID
-        
-        # Send the appropriate message
+            none
+        user = await get_user(msuid)
+
+        # Generate the share link
+        share_link = f"https://t.me/{username}?start=store-{msuid}-{outstr}"
+
+        # Check if the user has a shortener API
         if user.get("base_site") and user.get("shortener_api"):
             short_link = await get_short_link(user, share_link)
-            await bot.send_message(
-                chat_id=target_chat_id,
-                text=f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>",
-                parse_mode="html"
-            )
+            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{short_link}")
         else:
-            await bot.send_message(
-                chat_id=target_chat_id,
-                text=f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>",
-                
-            )
+            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{share_link}")
+
     except Exception as e:
-        # Log the error to a specific chat for debugging
-        await bot.send_message(
-            chat_id=-1002443600521,  # Replace with your debug chat ID
-            text=f"An error occurred: {str(e)}"
-        )
+        # Handle errors and log to a specific chat
+        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
+
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
