@@ -341,180 +341,77 @@ async def start(client, message):
             msuid = parts[1]  # Extract "12345"
             file_id = parts[2]  # Extract "abcd12345"
             files_ = await get_file_details(file_id)
+            files = files_[0]
+            title = files.file_name
+            size = get_size(files.file_size)
+            f_caption = files.caption or files.file_name
 
-            if not files_:
+            if CUSTOM_FILE_CAPTION:
                 try:
-                    pre, file_id = (
-                        base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))
-                        .decode("ascii")
-                        .split("_", 1)
+                    f_caption = CUSTOM_FILE_CAPTION.format(
+                        file_name=title or "",
+                        file_size=size or "",
+                        file_caption=f_caption or "",
                     )
-                except Exception as e:
-                    await message.reply("Error decoding file data!")
-                    return
-
-                if VERIFY_MODE and not await check_verification(client, message.from_user.id):
-                    btn = [
-                        [
-                            InlineKeyboardButton(
-                                "Verify",
-                                url=await get_token(
-                                    client,
-                                    message.from_user.id,
-                                    f"https://telegram.me/{username}?start=",
-                                ),
-                            )
-                        ],
-                        [
-                            InlineKeyboardButton(
-                                "How To Open Link & Verify", url=VERIFY_TUTORIAL
-                            )
-                        ],
-                    ]
-                    await message.reply_text(
-                        text="<b>You are not verified!\nKindly verify to continue!</b>",
-                        protect_content=True,
-                        reply_markup=InlineKeyboardMarkup(btn),
-                    )
-                    return
-
-                try:
-                    msg = await client.send_cached_media(
-                        chat_id=message.from_user.id,
-                        file_id=file_id,
-                        protect_content=True if pre == "filep" else False,
-                    )
-                    filetype = msg.media
-                    file = getattr(msg, filetype.value)
-                    title = " ".join(
-                        filter(
-                            lambda x: not x.startswith("[") and not x.startswith("@"),
-                            file.file_name.split(),
-                        )
-                    )
-                    size = get_size(file.file_size)
-                    f_caption = f"<code>{title}</code>"
-
-                    if CUSTOM_FILE_CAPTION:
-                        try:
-                            f_caption = CUSTOM_FILE_CAPTION.format(
-                                file_name=title or "",
-                                file_size=size or "",
-                                file_caption="",
-                            )
-                        except Exception as e:
-                            logger.exception(e)
-
-                    await msg.edit_caption(f_caption)
-
-                    if STREAM_MODE:
-                        g = await msg.reply_text(
-                            text="**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ sᴛʀᴇᴀᴍ ʟɪɴᴋ...**",
-                            quote=True,
-                            disable_web_page_preview=True,
-                            reply_markup=InlineKeyboardMarkup(
-                                [
-                                    [
-                                        InlineKeyboardButton(
-                                            "🚀 Fast Download / Watch Online🖥️",
-                                            callback_data=f"generate_stream_link:{file_id}",
-                                        )
-                                    ]
-                                ]
-                            ),
-                        )
-
-                    if AUTO_DELETE_MODE:
-                        k = await client.send_message(
-                            chat_id=message.from_user.id,
-                            text=f"<b><u>❗️IMPORTANT❗️</u></b>\n\nThis file will be deleted in <b><u>{AUTO_DELETE} minutes</u>!</b>",
-                        )
-                        await asyncio.sleep(AUTO_DELETE_TIME)
-                        try:
-                            await msg.delete()
-                            await g.delete()
-                            await k.edit_text("<b>Your file has been deleted!</b>")
-                        except Exception as e:
-                            logger.exception(e)
-
                 except Exception as e:
                     logger.exception(e)
-                    await message.reply("Error sending cached media!")
 
-            else:
-                # Handling existing file details
-                files = files_[0]
-                title = files.file_name
-                size = get_size(files.file_size)
-                f_caption = files.caption or files.file_name
-
-                if CUSTOM_FILE_CAPTION:
-                    try:
-                        f_caption = CUSTOM_FILE_CAPTION.format(
-                            file_name=title or "",
-                            file_size=size or "",
-                            file_caption=f_caption or "",
-                        )
-                    except Exception as e:
-                        logger.exception(e)
-
-                if VERIFY_MODE and not await check_verification(client, message.from_user.id):
-                    btn = [
-                        [
-                            InlineKeyboardButton(
-                                "Verify",
-                                url=await get_token(
-                                    client,
-                                    message.from_user.id,
-                                    f"https://telegram.me/{username}?start=",
-                                ),
-                            )
-                        ],
-                        [
-                            InlineKeyboardButton(
-                                "How To Open Link & Verify", url=VERIFY_TUTORIAL
-                            )
-                        ],
-                    ]
-                    await message.reply_text(
-                        text="<b>You are not verified!\nKindly verify to continue!</b>",
-                        protect_content=True,
-                        reply_markup=InlineKeyboardMarkup(btn),
-                    )
-                    return
-
-                try:
-                    x = await client.send_cached_media(
-                        chat_id=message.from_user.id,
-                        file_id=file_id,
-                        caption=f_caption,
-                        protect_content=True,
-                    )
-                    if STREAM_MODE:
-                        g = await x.reply_text(
-                            text="**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ...**",
-                            quote=True,
-                            disable_web_page_preview=True,
-                            reply_markup=InlineKeyboardMarkup(
-                                [
-                                    [
-                                        InlineKeyboardButton(
-                                            "🚀 Fast Download / Watch Online🖥️",
-                                            callback_data=f"generate_stream_link:{file_id}",
-                                        )
-                                    ]
-                                ]
+            if VERIFY_MODE and not await check_verification(client, message.from_user.id):
+                btn = [
+                    [
+                        InlineKeyboardButton(
+                            "Verify",
+                            url=await get_token(
+                                client,
+                                message.from_user.id,
+                                f"https://telegram.me/{username}?start=",
                             ),
                         )
-                except Exception as e:
-                    logger.exception(e)
-                    await message.reply("Error sending cached media!") 
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "How To Open Link & Verify", url=VERIFY_TUTORIAL
+                        )
+                    ],
+                ]
+                await message.reply_text(
+                    text="<b>You are not verified!\nKindly verify to continue!</b>",
+                    protect_content=True,
+                    reply_markup=InlineKeyboardMarkup(btn),
+                )
+                return
+
+            try:
+                x = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=file_id,
+                    caption=f_caption,
+                    protect_content=True,
+                )
+                if STREAM_MODE:
+                    g = await x.reply_text(
+                        text="**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ...**",
+                        quote=True,
+                        disable_web_page_preview=True,
+                        reply_markup=InlineKeyboardMarkup(
+                            [
+                                [
+                                    InlineKeyboardButton(
+                                        "🚀 Fast Download / Watch Online🖥️",
+                                        callback_data=f"generate_stream_link:{file_id}",
+                                    )
+                                ]
+                            ]
+                        ),
+                    )
+            except Exception as e:
+                logger.exception(e)
+                await message.reply("Error sending cached media!") 
                                                 
-        except IndexError:
-            await message.reply("Invalid start command format!")
-        except Exception as e:
-            logger.exception(e)
-            await message.reply("An unexpected error occurred!")
+        
+    except Exception as e:
+        logger.exception(e)
+        await message.reply("An unexpected error occurred!")
         
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
