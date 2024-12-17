@@ -80,7 +80,7 @@ async def incoming_gen_link(bot, message):
             await bot.send_message(
                 chat_id=target_chat_id,
                 text=f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>",
-                parse_mode="html"
+                
             )
     except Exception as e:
         # Log the error to a specific chat for debugging
