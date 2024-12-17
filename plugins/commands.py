@@ -332,7 +332,7 @@ async def start(client, message):
         except:
             pass
         await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")       
-        return
+    return
         
     
     elif data.split("-", 1)[0] == "store":
