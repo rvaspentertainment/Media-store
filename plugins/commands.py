@@ -55,7 +55,18 @@ def translate_text(text, user_id):
         translated = translator.translate(text, dest=dest_lang)
         return translated.text
     except Exception as e:
-        return f"Translation failed: {str(e)}"
+        await message.reply_text(f"Error: {str(e)}")
+
+@Client.on_message(filters.command("start") & filters.incoming)
+async def start(client, message):
+    try:
+        me2 = (await client.get_me()).mention
+        txt = script.START_TXT.format(message.from_user.mention, me2)
+        ttxt = translate_text(txt, user_id) 
+        await message.reply(f"{ttxt}")
+    except Exception as e:
+        await message.reply_text(f"Error: {str(e)}")
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -299,12 +310,12 @@ async def start(client, message):
                     )
             except Exception as e:
                 logger.exception(e)
-                await message.reply("Error sending cached media!")                                      
-        
+                await message.reply_text(f"Error: {str(e)}")
+
         except Exception as e:
             logger.exception(e)
-            await message.reply("An unexpected error occurred!")
-        
+            await message.reply_text(f"Error: {str(e)}")
+
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
