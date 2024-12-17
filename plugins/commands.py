@@ -17,6 +17,7 @@ from pyrogram.types import *
 from utils import verify_user, check_token, check_verification, get_token
 from config import *
 import re
+from googletrans import Translator
 import json
 import base64
 from urllib.parse import quote_plus
@@ -44,7 +45,17 @@ def get_size(size):
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ0
+translator = Translator()
 
+def translate_text(text, user_id):
+    dest_lang = kn  # Default to English if not set
+    if dest_lang == 'en':  # Skip translation if already English
+        return text
+    try:
+        translated = translator.translate(text, dest=dest_lang)
+        return translated.text
+    except Exception as e:
+        return f"Translation failed: {str(e)}"
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -66,12 +77,16 @@ async def start(client, message):
             buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         me2 = (await client.get_me()).mention
+        txt = script.START_TXT.format(message.from_user.mention, me2)
+        ttxt = translate_text(txt, user_id) 
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TXT.format(message.from_user.mention, me2),
+            caption=ttxt
             reply_markup=reply_markup
         )
         return
+
+    
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
