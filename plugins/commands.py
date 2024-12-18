@@ -18,12 +18,23 @@ import json
 import base64
 from urllib.parse import quote_plus
 from TechVJ.utils.file_properties import get_name, get_hash, get_media_file_size
+import datetime 
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 translator = Translator()
 
-Client.on_message(filters.command("ddud") & filters.incoming)
+async def dati():
+    try:
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+        kolkata_time = datetime.now(kolkata_timezone)
+        formatted_time = kolkata_time.strftime('%d/%m/%Y %H:%M:%S')  
+        return formatted_time 
+    except Exception as e:
+        # Handle exceptions appropriately, e.g., logging or raising
+        raise RuntimeError(f"Error in dati function: {str(e)}")
+
+Client.on_message(filters.command("dbud") & filters.incoming)
 async def dbud(client, message):
     try:
         txt = await db.user_data.find_one({"id": message.from_user.id})
@@ -71,19 +82,20 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
     if not await db.user_data.find_one({"id": message.from_user.id}):
             user_data = {
-                "id": user_id,
-                "bot_lang": en,
+                "id": message.from_user.id,
+                "bot_lang": 'en',
                 "file_stored": 0,
                 "files": [],
+                "premium-users": [],
                 "shortner": False,
-                "shortner-type": none,
-                "verify-type": hrs,
-                "verify-hrs": daily,
+                "shortner-type": None,
+                "verify-type": None,
+                "verify-hrs": None,
                 "verify-files": 10,
-                "verify-logs-c": none,
-                "shotner-site": none,
-                "shotner-api": none,
-                "fsub": none,
+                "verify-logs-c": None,
+                "shotner-site": None,
+                "shotner-api": None,
+                "fsub": None,
                 "joined": await dati()
             }    
             await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
