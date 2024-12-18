@@ -1,7 +1,3 @@
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import os
 import logging
 import random
@@ -25,11 +21,7 @@ from TechVJ.utils.file_properties import get_name, get_hash, get_media_file_size
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
+translator = Translator()
 
 def get_size(size):
     """Get size in readable format"""
@@ -42,16 +34,11 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ0
-translator = Translator()
-
 async def translate_text(txt, user_id):
     
     dest_lang = 'kn'  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
-        return text
+        return txt
     try:
         translated = translator.translate(txt, dest=dest_lang)
         return translated.text
@@ -62,8 +49,7 @@ async def translate_text(txt, user_id):
 async def tr(client, message):
     try:
         user_id = message.from_user.id 
-        me2 = (await client.get_me()).mention
-        txt = script.START_TXT.format(message.from_user.mention, me2)
+        txt = script.START_TXT.format(message.from_user.mention)
         ttxt = await translate_text(txt, user_id) 
         await message.reply(f"{ttxt}")
     except Exception as e:
@@ -76,15 +62,24 @@ async def start(client, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
+    if not await db.user_data.find_one({"id": user_id}):
+            user_data = {
+                "id": user_id,
+                "bot_lang": en,
+                "file_stored": 0,
+                
+                "shortner": False
+                
+                "shotner-site": none,
+                "shotner-api": none,
+                "joined": await dati()
+            }    
+            await db.ud.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('💝 sᴜʙsᴄʀɪʙᴇ ᴍʏ ʏᴏᴜᴛᴜʙᴇ ᴄʜᴀɴɴᴇʟ', url='https://youtube.com/@Tech_VJ')
-            ],[
-            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/vj_bot_disscussion'),
-            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
-            ],[
             InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
+            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about'),
+            InlineKeyboardButton('⚙ Bot settings', callback_data='settings')
         ]]
         if CLONE_MODE == True:
             buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
@@ -98,13 +93,6 @@ async def start(client, message):
             reply_markup=reply_markup
         )
         return
-
-    
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-    
     data = message.command[1]
     try:
         pre, file_id = data.split('_', 1)
@@ -159,8 +147,7 @@ async def start(client, message):
                 await sts.edit("FAILED")
                 return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
             os.remove(file)
-            BATCH_FILES[file_id] = msgs
-            
+            BATCH_FILES[file_id] = msgs            
         filesarr = []
         for msg in msgs:
             title = msg.get("title")
@@ -212,8 +199,7 @@ async def start(client, message):
                     protect_content=msg.get('protect', False),
                     reply_markup=reply_markup
                 )
-                filesarr.append(msg)
-                
+                filesarr.append(msg)           
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
@@ -240,128 +226,118 @@ async def start(client, message):
                     pass
             await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")
         return  
-    
-    elif data.split("-", 1)[0] == "s":
+    files_ = await get_file_details(file_id)           
+    if not files_:
+        pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+        if not await check_verification(client, message.from_user.id) and VERIFY_MODE == True:
+            btn = [[
+                InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{username}?start="))
+            ],[
+                InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+            ]]
+            await message.reply_text(
+                text="<b>You are not verified !\nKindly verify to continue !</b>",
+                protect_content=True,
+                reply_markup=InlineKeyboardMarkup(btn)
+            )
+            return
         try:
-            msuid = data.split("-", 2)[1]
-            file_id = data.split("-", 3)[2]
-            files_ = await get_file_details(file_id)
-            files = files_[0]
-            title = files.file_name
-            size = get_size(files.file_size)
-            f_caption = files.caption or files.file_name
-
+            msg = await client.send_cached_media(
+                chat_id=message.from_user.id,
+                file_id=file_id,
+                protect_content=True if pre == 'filep' else False,  
+            )
+            filetype = msg.media
+            file = getattr(msg, filetype.value)
+            title = '@VJ_Botz  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            size=get_size(file.file_size)
+            f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(
-                        file_name=title or "",
-                        file_size=size or "",
-                        file_caption=f_caption or "",
-                    )
-                except Exception as e:
-                    logger.exception(e)
-
-            if VERIFY_MODE and not await check_verification(client, message.from_user.id):
-                btn = [
-                    [
-                        InlineKeyboardButton(
-                            "Verify",
-                            url=await get_token(
-                                client,
-                                message.from_user.id,
-                                f"https://telegram.me/{username}?start=",
-                            ),
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "How To Open Link & Verify", url=VERIFY_TUTORIAL
-                        )
-                    ],
-                ]
-                await message.reply_text(
-                    text="<b>You are not verified!\nKindly verify to continue!</b>",
-                    protect_content=True,
-                    reply_markup=InlineKeyboardMarkup(btn),
-                )
-                return
-
-            try:
-                x = await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=file_id,
-                    caption=f_caption,
-                    protect_content=True,
-                )
-                if STREAM_MODE:
-                    g = await x.reply_text(
-                        text="**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ...**",
-                        quote=True,
-                        disable_web_page_preview=True,
-                        reply_markup=InlineKeyboardMarkup(
+                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+                except:
+                    return
+            
+            await msg.edit_caption(f_caption)
+            if STREAM_MODE == True:
+                g = await msg.reply_text(
+                    text=f"**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ sᴛʀᴇᴀᴍ ʟɪɴᴋ ᴏғ ʏᴏᴜʀ ғɪʟᴇ ᴀɴᴅ ᴀʟsᴏ ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴏʀ ʏᴏᴜʀ ғɪʟᴇ ᴄʟɪᴄᴋɪɴɢ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ 👇**",
+                    quote=True,
+                    disable_web_page_preview=True,
+                    reply_markup=InlineKeyboardMarkup(
+                        [
                             [
-                                [
-                                    InlineKeyboardButton(
-                                        "🚀 Fast Download / Watch Online🖥️",
-                                        callback_data=f"generate_stream_link:{file_id}",
-                                    )
-                                ]
+                                InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}')
                             ]
-                        ),
+                        ]
                     )
-            except Exception as e:
-                logger.exception(e)
-                await message.reply_text(f"Error: {str(e)}")
-
+                )
+            if AUTO_DELETE_MODE == True:
+                k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+                await asyncio.sleep(AUTO_DELETE_TIME)
+                try:
+                    await msg.delete()
+                except:
+                    pass
+                await g.delete()
+                await k.edit_text("<b>Your File/Video is successfully deleted!!!</b>")
+            return
+        except:
+            pass
+        return await message.reply('No such file exist.')
+    files = files_[0]
+    title = files.file_name
+    size=get_size(files.file_size)
+    f_caption=files.caption
+    if CUSTOM_FILE_CAPTION:
+        try:
+            f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
         except Exception as e:
             logger.exception(e)
-            await message.reply_text(f"Error: {str(e)}")
+            f_caption=f_caption
+    if f_caption is None:
+        f_caption = f"{files.file_name}"
+    if not await check_verification(client, message.from_user.id) and VERIFY_MODE == True:
+        btn = [[
+            InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{username}?start="))
+        ],[
+            InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+        ]]
+        await message.reply_text(
+            text="<b>You are not verified !\nKindly verify to continue !</b>",
+            protect_content=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
+    x = await client.send_cached_media(
+        chat_id=message.from_user.id,
+        file_id=file_id,
+        caption=f_caption,
+        protect_content=True if pre == 'filep' else False,
+    )
+    if STREAM_MODE == True:
+        g = await x.reply_text(
+            text=f"**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ sᴛʀᴇᴀᴍ ʟɪɴᴋ ᴏғ ʏᴏᴜʀ ғɪʟᴇ ᴀɴᴅ ᴀʟsᴏ ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴏʀ ʏᴏᴜʀ ғɪʟᴇ ᴄʟɪᴄᴋɪɴɢ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ 👇**",
+            quote=True,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}')
+                    ]
+                ]
+            )
+        )
+    if AUTO_DELETE_MODE == True:
+        k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+        await asyncio.sleep(AUTO_DELETE_TIME)
+        try:
+            await x.delete()
+        except:
+            pass
+        await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")       
+        
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
-@Client.on_message(filters.command('api') & filters.private)
-async def shortener_api_handler(client, m: Message):
-    user_id = m.from_user.id
-    user = await get_user(user_id)
-    cmd = m.command
-
-    if len(cmd) == 1:
-        s = script.SHORTENER_API_MESSAGE.format(base_site=user["base_site"], shortener_api=user["shortener_api"])
-        return await m.reply(s)
-
-    elif len(cmd) == 2:    
-        api = cmd[1].strip()
-        await update_user_info(user_id, {"shortener_api": api})
-        await m.reply("<b>Shortener API updated successfully to</b> " + api)
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
-@Client.on_message(filters.command("base_site") & filters.private)
-async def base_site_handler(client, m: Message):
-    user_id = m.from_user.id
-    user = await get_user(user_id)
-    cmd = m.command
-    text = f"`/base_site (base_site)`\n\n<b>Current base site: None\n\n EX:</b> `/base_site shortnerdomain.com`\n\nIf You Want To Remove Base Site Then Copy This And Send To Bot - `/base_site None`"
-    if len(cmd) == 1:
-        return await m.reply(text=text, disable_web_page_preview=True)
-    elif len(cmd) == 2:
-        base_site = cmd[1].strip()
-        if base_site == None:
-            await update_user_info(user_id, {"base_site": base_site})
-            return await m.reply("<b>Base Site updated successfully</b>")
-            
-        if not domain(base_site):
-            return await m.reply(text=text, disable_web_page_preview=True)
-        await update_user_info(user_id, {"base_site": base_site})
-        await m.reply("<b>Base Site updated successfully</b>")
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
@@ -378,28 +354,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InputMediaPhoto(random.choice(PICS))
         )
         reply_markup = InlineKeyboardMarkup(buttons)
-        me2 = (await client.get_me()).mention
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=script.ABOUT_TXT.format(me2),
+            text=ttxt
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('💝 sᴜʙsᴄʀɪʙᴇ ᴍʏ ʏᴏᴜᴛᴜʙᴇ ᴄʜᴀɴɴᴇʟ', url='https://youtube.com/@Tech_VJ')
-            ],[
-            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/vj_bot_disscussion'),
-            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
-            ],[
-            InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')
-            ],[
             InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
+            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about'),
+            InlineKeyboardButton('⚙ Bot settings', callback_data='settings')
         ]]
         
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -408,37 +376,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             query.message.id, 
             InputMediaPhoto(random.choice(PICS))
         )
-        me2 = (await client.get_me()).mention
+        txt = script.START_TXT.format(query.from_user.id)
+        ttxt = await translate_text(txt, user_id) 
         await query.message.edit_text(
-            text=script.START_TXT.format(query.from_user.mention, me2),
+            text=fttxt
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-    
-    elif query.data == "clone":
-        buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
-        ]]
-        await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
-        )
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.CLONE_TXT.format(query.from_user.mention),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-        )          
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
     
     elif query.data == "help":
         buttons = [[
@@ -450,23 +394,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
             query.message.id, 
             InputMediaPhoto(random.choice(PICS))
         )
+        user_id = query.from_user.id 
+        txt = script.HELP_TXT
+        ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.HELP_TXT,
+            text=ttxt
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )  
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
 
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
         try:
             user_id = query.from_user.id
             username =  query.from_user.mention 
-
             log_msg = await client.send_cached_media(
                 chat_id=LOG_CHANNEL,
                 file_id=file_id,
@@ -474,15 +416,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             fileName = {quote_plus(get_name(log_msg))}
             stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
             download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
-
             xo = await query.message.reply_text(f'🔐')
             await asyncio.sleep(1)
             await xo.delete()
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
             button = [[
                 InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
                 InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
@@ -512,6 +448,3 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer(f"☣something went wrong\n\n{e}", show_alert=True)
             return
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
