@@ -47,7 +47,7 @@ def get_size(size):
 # Ask Doubt on telegram @KingVJ0
 translator = Translator()
 
-def translate_text(text, user_id):
+async def translate_text(text, user_id):
     dest_lang = kn  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return text
@@ -57,8 +57,8 @@ def translate_text(text, user_id):
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
-@Client.on_message(filters.command("start") & filters.incoming)
-async def start(client, message):
+@Client.on_message(filters.command("tr") & filters.incoming)
+async def tr(client, message):
     try:
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
