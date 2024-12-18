@@ -26,7 +26,7 @@ translator = Translator()
 Client.on_message(filters.command("ddud") & filters.incoming)
 async def dbud(client, message):
     try:
-        txt = await db.user_data.find_one({"id": message.from_user.id}):
+        txt = await db.user_data.find_one({"id": message.from_user.id})
         await message.reply(f"{txt}")
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
