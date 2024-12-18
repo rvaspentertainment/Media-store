@@ -37,6 +37,25 @@ async def dati():
 Client.on_message(filters.command("dbud") & filters.incoming)
 async def dbud(client, message):
     try:
+        if not await db.user_data.find_one({"id": message.from_user.id}):
+            user_data = {
+                "id": message.from_user.id,
+                "bot_lang": 'en',
+                "file_stored": 0,
+                "files": [],
+                "premium-users": [],
+                "shortner": False,
+                "shortner-type": None,
+                "verify-type": None,
+                "verify-hrs": None,
+                "verify-files": 10,
+                "verify-logs-c": None,
+                "shotner-site": None,
+                "shotner-api": None,
+                "fsub": None,
+                "joined": await dati()
+            }    
+            await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
         txt = await db.user_data.find_one({"id": message.from_user.id})
         await message.reply(f"{txt}")
     except Exception as e:
