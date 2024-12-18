@@ -34,7 +34,7 @@ async def dati():
         # Handle exceptions appropriately, e.g., logging or raising
         raise RuntimeError(f"Error in dati function: {str(e)}")
 
-Client.on_message(filters.command("dbud") & filters.incoming)
+@Client.on_message(filters.command("dbud") & filters.incoming)
 async def dbud(client, message):
     try:
         if not await db.user_data.find_one({"id": message.from_user.id}):
