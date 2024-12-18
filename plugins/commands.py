@@ -69,7 +69,7 @@ async def start(client, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
-    if not await db.user_data.find_one({"id": user_id}):
+    if not await db.user_data.find_one({"id": message.from_user.id}):
             user_data = {
                 "id": user_id,
                 "bot_lang": en,
