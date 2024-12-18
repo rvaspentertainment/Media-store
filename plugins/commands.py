@@ -73,6 +73,7 @@ async def start(client, message):
                 "verify-type": hrs,
                 "verify-hrs": daily,
                 "verify-files": 10,
+                "verify-logs-c": none,
                 "shotner-site": none,
                 "shotner-api": none,
                 "fsub": none,
