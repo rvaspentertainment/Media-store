@@ -66,7 +66,7 @@ async def incoming_media(bot, message):
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
         
 
-@Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
+@Client.on_message(filters.command(['ink', 'link']) & filters.create(allowed))
 async def gen_link_s(bot, message):
     username = (await bot.get_me()).username
     replied = message.reply_to_message
@@ -103,7 +103,7 @@ async def gen_link_s(bot, message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@Client.on_message(filters.command(['batch', 'pbatch']) & filters.create(allowed))
+@Client.on_message(filters.command(['atch', 'p1batch']) & filters.create(allowed))
 async def gen_link_batch(bot, message):
     username = (await bot.get_me()).username
     if " " not in message.text:
