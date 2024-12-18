@@ -67,14 +67,18 @@ async def start(client, message):
                 "id": user_id,
                 "bot_lang": en,
                 "file_stored": 0,
-                
-                "shortner": False
-                
+                "files": [],
+                "shortner": False,
+                "shortner-type": none,
+                "verify-type": hrs,
+                "verify-hrs": daily,
+                "verify-files": 10,
                 "shotner-site": none,
                 "shotner-api": none,
+                "fsub": none,
                 "joined": await dati()
             }    
-            await db.ud.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
+            await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
     if len(message.command) != 2:
         buttons = [[
             InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
