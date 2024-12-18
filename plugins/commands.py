@@ -64,7 +64,7 @@ async def tr(client, message):
         user_id = message.from_user.id 
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
-        ttxt = translate_text(txt, user_id) 
+        ttxt = await translate_text(txt, user_id) 
         await message.reply(f"{ttxt}")
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
