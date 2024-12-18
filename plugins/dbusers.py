@@ -13,6 +13,7 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.grp = self.db.groups
+        self.user_data = self.db.user_data
 
 
     def new_user(self, id, name):
