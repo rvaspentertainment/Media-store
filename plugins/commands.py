@@ -54,7 +54,7 @@ async def translate_text(txt, user_id):
         return text
     try:
         translated = translator.translate(txt, dest=dest_lang)
-        return translated
+        return translated.text
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
@@ -91,7 +91,7 @@ async def start(client, message):
         reply_markup = InlineKeyboardMarkup(buttons)
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
-        ttxt = translate_text(txt, message.from_user.id) 
+        ttxt = await translate_text(txt, message.from_user.id) 
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=ttxt,
