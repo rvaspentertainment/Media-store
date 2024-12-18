@@ -99,25 +99,6 @@ async def start(client, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
-    if not await db.user_data.find_one({"id": message.from_user.id}):
-            user_data = {
-                "id": message.from_user.id,
-                "bot_lang": 'en',
-                "file_stored": 0,
-                "files": [],
-                "premium-users": [],
-                "shortner": False,
-                "shortner-type": None,
-                "verify-type": None,
-                "verify-hrs": None,
-                "verify-files": 10,
-                "verify-logs-c": None,
-                "shotner-site": None,
-                "shotner-api": None,
-                "fsub": None,
-                "joined": await dati()
-            }    
-            await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
     if len(message.command) != 2:
         buttons = [[
             InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
