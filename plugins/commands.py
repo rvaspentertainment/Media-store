@@ -47,14 +47,14 @@ def get_size(size):
 # Ask Doubt on telegram @KingVJ0
 translator = Translator()
 
-async def translate_text(text, user_id):
+async def translate_text(txt, user_id):
     
     dest_lang = kn  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return text
     try:
-        translated = translator.translate(text, dest=dest_lang)
-        return translated.text
+        translated = translator.translate(txt, dest=dest_lang)
+        return translated
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
