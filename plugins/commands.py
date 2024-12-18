@@ -23,9 +23,17 @@ logger = logging.getLogger(__name__)
 BATCH_FILES = {}
 translator = Translator()
 
+Client.on_message(filters.command("ddud") & filters.incoming)
+async def dbud(client, message):
+    try:
+        txt = await db.user_data.find_one({"id": message.from_user.id}):
+        await message.reply(f"{txt}")
+    except Exception as e:
+        await message.reply_text(f"Error: {str(e)}")
+
+
 def get_size(size):
     """Get size in readable format"""
-
     units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
     size = float(size)
     i = 0
@@ -34,8 +42,7 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
-async def translate_text(txt, user_id):
-    
+async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return txt
