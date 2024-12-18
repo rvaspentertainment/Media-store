@@ -61,6 +61,7 @@ async def translate_text(text, user_id):
 @Client.on_message(filters.command("tr") & filters.incoming)
 async def tr(client, message):
     try:
+        user_id = message.from_user.id 
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
         ttxt = translate_text(txt, user_id) 
@@ -242,9 +243,8 @@ async def start(client, message):
     
     elif data.split("-", 1)[0] == "s":
         try:
-            parts = data.split("-")
-            msuid = parts[0]  # Extract "12345"
-            file_id = parts[1]  # Extract "abcd12345"
+            msuid = data.split("-", 2)[1]
+            file_id = data.split("-", 3)[2]
             files_ = await get_file_details(file_id)
             files = files_[0]
             title = files.file_name
