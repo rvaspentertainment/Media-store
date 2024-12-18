@@ -49,7 +49,7 @@ translator = Translator()
 
 async def translate_text(txt, user_id):
     
-    dest_lang = kn  # Default to English if not set
+    dest_lang = 'kn'  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return text
     try:
