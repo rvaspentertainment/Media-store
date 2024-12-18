@@ -41,7 +41,7 @@ async def incoming_gen_link(bot, message):
         msuid, file_link = text.split('-')  # Split the text into msuid and file link
         msuid = msuid.strip()  # User ID
         file_link = file_link.strip()  # File link
-        share_link = f"https://t.me/Get_Media_in_Store_bot?start=s-{msuid}-{file_link}"
+        share_link = f"https://t.me/Get_Media_in_Store_bot?start={file_link}"
         await bot.send_message(msuid, f"Here is your file link: {share_link}\n\n<code>{share_link}</code>")
     except Exception as e:
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
