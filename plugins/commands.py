@@ -48,6 +48,7 @@ def get_size(size):
 translator = Translator()
 
 async def translate_text(text, user_id):
+    
     dest_lang = kn  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return text
@@ -89,7 +90,7 @@ async def start(client, message):
         reply_markup = InlineKeyboardMarkup(buttons)
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
-        ttxt = translate_text(txt, user_id) 
+        ttxt = translate_text(txt, message.from_user.id) 
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=ttxt,
@@ -242,8 +243,8 @@ async def start(client, message):
     elif data.split("-", 1)[0] == "s":
         try:
             parts = data.split("-")
-            msuid = parts[1]  # Extract "12345"
-            file_id = parts[2]  # Extract "abcd12345"
+            msuid = parts[0]  # Extract "12345"
+            file_id = parts[1]  # Extract "abcd12345"
             files_ = await get_file_details(file_id)
             files = files_[0]
             title = files.file_name
