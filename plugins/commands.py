@@ -370,7 +370,7 @@ async def start(client, message):
             caption=f_caption,
             protect_content=True if pre == 'filep' else False,
         )
-        await db.user_data[user_id] ["files_taken"]  +1
+        db.user_data[user_id]["files_taken"] += 1
         if STREAM_MODE == True:
             g = await x.reply_text(
                 text=f"**â€¢â€¢ Êá´á´œ á´„á´€É´ É¢á´‡É´á´‡Ê€á´€á´›á´‡ á´É´ÊŸÉªÉ´á´‡ sá´›Ê€á´‡á´€á´ ÊŸÉªÉ´á´‹ á´Ò“ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´€É´á´… á´€ÊŸsá´ Ò“á´€sá´› á´…á´á´¡É´ÊŸá´á´€á´… ÊŸÉªÉ´á´‹ Ò“á´Ê€ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´„ÊŸÉªá´„á´‹ÉªÉ´É¢ á´É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´ ðŸ‘‡**",
