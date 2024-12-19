@@ -106,6 +106,7 @@ async def start(client, message):
             "id": message.from_user.id,
             "bot_lang": 'en',
             "file_stored": 0,
+            "files_taken": 0,
             "files": [],
             "premium-users": [],
             "shortner-type": None,
@@ -123,12 +124,12 @@ async def start(client, message):
 
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about'),
-            InlineKeyboardButton('⚙ Bot settings', callback_data='settings')
+            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
+            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about'),
+            InlineKeyboardButton('âš™ Bot settings', callback_data='settings')
         ]]
         if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
+            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         me2 = (await client.get_me()).mention
         txt = script.START_TXT.format(message.from_user.mention, me2)
@@ -181,7 +182,7 @@ async def start(client, message):
                 return
         except Exception as e:
             return await message.reply_text(f"**Error - {e}**")
-        sts = await message.reply("**🔺 ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ**")
+        sts = await message.reply("**ðŸ”º á´˜ÊŸá´‡á´€sá´‡ á´¡á´€Éªá´›**")
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
         if not msgs:
@@ -222,18 +223,18 @@ async def start(client, message):
                     download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
  
                     await log_msg.reply_text(
-                        text=f"•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id} \n•• ᴜꜱᴇʀɴᴀᴍᴇ : {username} \n\n•• ᖴᎥᒪᗴ Nᗩᗰᗴ : {fileName}",
+                        text=f"â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… êœ°á´Ê€ Éªá´… #{user_id} \nâ€¢â€¢ á´œêœ±á´‡Ê€É´á´€á´á´‡ : {username} \n\nâ€¢â€¢ á–´áŽ¥á’ªá—´ Ná—©á—°á—´ : {fileName}",
                         quote=True,
                         disable_web_page_preview=True,
-                        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                                                            InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)]])  # web stream Link
+                        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                                                            InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)]])  # web stream Link
                     )
                 if STREAM_MODE == True:
                     button = [[
-                        InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                        InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
+                        InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                        InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
                     ],[
-                        InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
+                        InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
                     ]]
                     reply_markup=InlineKeyboardMarkup(button)
                 else:
@@ -263,7 +264,7 @@ async def start(client, message):
             await asyncio.sleep(1) 
         await sts.delete()
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             for x in filesarr:
                 try:
@@ -300,7 +301,7 @@ async def start(client, message):
             )
             filetype = msg.media
             file = getattr(msg, filetype.value)
-            title = '@VJ_Botz  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
             size=get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
@@ -312,19 +313,19 @@ async def start(client, message):
             await msg.edit_caption(f_caption)
             if STREAM_MODE == True:
                 g = await msg.reply_text(
-                    text=f"**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ sᴛʀᴇᴀᴍ ʟɪɴᴋ ᴏғ ʏᴏᴜʀ ғɪʟᴇ ᴀɴᴅ ᴀʟsᴏ ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴏʀ ʏᴏᴜʀ ғɪʟᴇ ᴄʟɪᴄᴋɪɴɢ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ 👇**",
+                    text=f"**â€¢â€¢ Êá´á´œ á´„á´€É´ É¢á´‡É´á´‡Ê€á´€á´›á´‡ á´É´ÊŸÉªÉ´á´‡ sá´›Ê€á´‡á´€á´ ÊŸÉªÉ´á´‹ á´Ò“ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´€É´á´… á´€ÊŸsá´ Ò“á´€sá´› á´…á´á´¡É´ÊŸá´á´€á´… ÊŸÉªÉ´á´‹ Ò“á´Ê€ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´„ÊŸÉªá´„á´‹ÉªÉ´É¢ á´É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´ ðŸ‘‡**",
                     quote=True,
                     disable_web_page_preview=True,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}')
+                                InlineKeyboardButton('ðŸš€ Fast Download / Watch OnlineðŸ–¥ï¸', callback_data=f'generate_stream_link:{file_id}')
                             ]
                         ]
                     )
                 )
             if AUTO_DELETE_MODE == True:
-                k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+                k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
                 await asyncio.sleep(AUTO_DELETE_TIME)
                 try:
                     await msg.delete()
@@ -336,10 +337,11 @@ async def start(client, message):
         except:
             pass
         return await message.reply('No such file exist.')
+    user_id  = message.from_user.id 
     files = files_[0]
     title = files.file_name
     size=get_size(files.file_size)
-    f_caption=files.caption
+    f_caption=files.file_name
     msuid = files.caption 
     if CUSTOM_FILE_CAPTION:
         try:
@@ -349,7 +351,7 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
-    if verify:
+    if db.user_data[msuid] ["shortner-type"] == "verify" and db.user_data[msuid] ["shortner"] and user_id not in db.user_data[msuid] ["premium-users"] :
         if not await check_verification(client, message.from_user.id) and VERIFY_MODE == True:
             btn = [[
                 InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{username}?start="))
@@ -368,21 +370,22 @@ async def start(client, message):
             caption=f_caption,
             protect_content=True if pre == 'filep' else False,
         )
+        await db.user_data[user_id] ["files_taken"]  +1
         if STREAM_MODE == True:
             g = await x.reply_text(
-                text=f"**•• ʏᴏᴜ ᴄᴀɴ ɢᴇɴᴇʀᴀᴛᴇ ᴏɴʟɪɴᴇ sᴛʀᴇᴀᴍ ʟɪɴᴋ ᴏғ ʏᴏᴜʀ ғɪʟᴇ ᴀɴᴅ ᴀʟsᴏ ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴏʀ ʏᴏᴜʀ ғɪʟᴇ ᴄʟɪᴄᴋɪɴɢ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ 👇**",
+                text=f"**â€¢â€¢ Êá´á´œ á´„á´€É´ É¢á´‡É´á´‡Ê€á´€á´›á´‡ á´É´ÊŸÉªÉ´á´‡ sá´›Ê€á´‡á´€á´ ÊŸÉªÉ´á´‹ á´Ò“ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´€É´á´… á´€ÊŸsá´ Ò“á´€sá´› á´…á´á´¡É´ÊŸá´á´€á´… ÊŸÉªÉ´á´‹ Ò“á´Ê€ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´„ÊŸÉªá´„á´‹ÉªÉ´É¢ á´É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´ ðŸ‘‡**",
                 quote=True,
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}')
+                            InlineKeyboardButton('ðŸš€ Fast Download / Watch OnlineðŸ–¥ï¸', callback_data=f'generate_stream_link:{file_id}')
                         ]
                     ]
                 )
             )
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             try:
                 await x.delete()
@@ -398,8 +401,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -418,9 +421,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about'),
-            InlineKeyboardButton('⚙ Bot settings', callback_data='settings')
+            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
+            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about'),
+            InlineKeyboardButton('âš™ Bot settings', callback_data='settings')
         ]]
         
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -439,8 +442,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -469,35 +472,548 @@ async def cb_handler(client: Client, query: CallbackQuery):
             fileName = {quote_plus(get_name(log_msg))}
             stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
             download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
-            xo = await query.message.reply_text(f'🔐')
+            xo = await query.message.reply_text(f'ðŸ”')
             await asyncio.sleep(1)
             await xo.delete()
             button = [[
-                InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
             ]]
             reply_markup=InlineKeyboardMarkup(button)
             await log_msg.reply_text(
-                text=f"•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id} \n•• ᴜꜱᴇʀɴᴀᴍᴇ : {username} \n\n•• ᖴᎥᒪᗴ Nᗩᗰᗴ : {fileName}",
+                text=f"â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… êœ°á´Ê€ Éªá´… #{user_id} \nâ€¢â€¢ á´œêœ±á´‡Ê€É´á´€á´á´‡ : {username} \n\nâ€¢â€¢ á–´áŽ¥á’ªá—´ Ná—©á—°á—´ : {fileName}",
                 quote=True,
                 disable_web_page_preview=True,
                 reply_markup=reply_markup
             )
             button = [[
-                InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
             ],[
-                InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
+                InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
             ]]
             reply_markup=InlineKeyboardMarkup(button)
             await query.message.reply_text(
-                text="•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ☠︎⚔",
+                text="â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… â˜ ï¸Žâš”",
                 quote=True,
                 disable_web_page_preview=True,
                 reply_markup=reply_markup
             )
         except Exception as e:
             print(e)  # print the error message
-            await query.answer(f"☣something went wrong\n\n{e}", show_alert=True)
+            await query.answer(f"â˜£something went wrong\n\n{e}", show_alert=True)
             return
+
+elif query.data == "settings":
+        buttons = [[
+            InlineKeyboardButton('Bot Language', callback_data='lang'),
+            InlineKeyboardButton('Shortner', callback_data='short'),
+            InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
+        ],[
+            InlineKeyboardButton('File Access', callback_data='fileaccess'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+        ],[
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='start'),
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.SET_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )  
+
+
+
+
+    elif query.data == "lang":
+        buttons = [[
+            InlineKeyboardButton('à²•à²¨à³à²¨à²¡, callback_data='kan')
+        ],[
+            InlineKeyboardButton('English', callback_data='eng'),
+            InlineKeyboardButton('Telugu, callback_data='tel')
+        ],[
+            InlineKeyboardButton('Tamil', callback_data='tam'),
+            InlineKeyboardButton('Malayalam', callback_data='mal'),
+            InlineKeyboardButton('Hindi', callback_data='hin')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='settings'),
+            InlineKeyboardButton('â–¶ï¸', callback_data='lang1')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.LANG_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )     
+
+
+
+elif query.data == "lang1":
+        buttons = [[
+            InlineKeyboardButton('Bot Language, callback_data='lang'),
+            InlineKeyboardButton('Shortner', callback_data='short'),
+            InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
+        ],[
+            InlineKeyboardButton('File Access', callback_data='file-access'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+        ],[
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='lang'),
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.LANG_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )       
+        
+
+elif query.data == "short":
+        buttons = [[
+            InlineKeyboardButton('âœ”', callback_data='short_t'),
+            InlineKeyboardButton('âŒ', callback_data='short_f')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='settings')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+    
+elif query.data == "short_f":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='short')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_F_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )            
+        
+        
+elif query.data == "short_t":
+        buttons = [[
+            InlineKeyboardButton('Verify', callback_data='verify_t'),
+            InlineKeyboardButton('Link Shortner', callback_data='l_short')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='short')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_T_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        
+        
+elif query.data == "link_short":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+        
+        
+elif query.data == "verify_t":
+        buttons = [[
+            InlineKeyboardButton('Daily', callback_data='d_verify'),
+            InlineKeyboardButton('Per Hours', callback_data='h_verify'),
+            InlineKeyboardButton('Per Files', callback_data='f_verify')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+        
+elif query.data == "d_verify":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+        
+elif query.data == "h_verify":
+        buttons = [[
+            InlineKeyboardButton('3ï¸âƒ£', callback_data='h_verify3'),
+            InlineKeyboardButton('6ï¸âƒ£', callback_data='h_verify6'),
+            InlineKeyboardButton('1ï¸âƒ£2ï¸âƒ£', callback_data='h_verify12'),
+            InlineKeyboardButton('2ï¸âƒ£4ï¸âƒ£', callback_data='h_verify24')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+        
+elif query.data == "h_verify3":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "h_verify6":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "h_verify12":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "h_verify24":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+        
+        
+elif query.data == "f_verify":
+        buttons = [[
+            InlineKeyboardButton('3ï¸âƒ£', callback_data='f_verify3'),
+            InlineKeyboardButton('5ï¸âƒ£', callback_data='f_verify5'),
+            InlineKeyboardButton('8ï¸âƒ£', callback_data='f_verify8'),
+            InlineKeyboardButton('1ï¸âƒ£0ï¸âƒ£', callback_data='f_verify10')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+
+
+elif query.data == "f_verify3":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "f_verify5":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "f_verify8":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "f_verify10":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                             
+        
+        
+  elif query.data == "file_access":
+        buttons = [[
+            InlineKeyboardButton('âœ”, callback_data='file_access_t'),
+            InlineKeyboardButton('âŒ', callback_data='file_access_f')
+        ],[
+            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                      
+
+        
+elif query.data == "file_access_t":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+elif query.data == "file_access_f":
+        buttons = [[       
+            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
+            InlineKeyboardButton('âŒ', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )    
 
