@@ -28,7 +28,7 @@ translator = Translator()
 async def dati():
     try:
         kolkata_timezone = pytz.timezone('Asia/Kolkata')
-        kolkata_time = datetime.now(kolkata_timezone)
+        kolkata_time = datetime.datetime.now(kolkata_timezone)
         formatted_time = kolkata_time.strftime('%d/%m/%Y %H:%M:%S')  
         return formatted_time 
     except Exception as e:
