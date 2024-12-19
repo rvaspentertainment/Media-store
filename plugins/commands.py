@@ -41,8 +41,8 @@ async def dbud(client, message):
         if not await db.user_data.find_one({"id": message.from_user.id}):
             user_data = {
                 "id": message.from_user.id,
-                "bot_lang": 'en',
-                "file_stored": 0,
+                "bot-lang": 'en',
+                "file-stored": 0,
                 "files": [],
                 "premium-users": [],
                 "shortner": False,
@@ -54,6 +54,7 @@ async def dbud(client, message):
                 "shotner-site": None,
                 "shotner-api": None,
                 "fsub": None,
+                "file-access": True,
                 "joined": await dati()
             }    
             await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
@@ -115,6 +116,7 @@ async def start(client, message):
             "shotner-site": None,
             "shotner-api": None,
             "fsub": None,
+            "file-access": False, 
             "joined": await dati()
             }    
         await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
