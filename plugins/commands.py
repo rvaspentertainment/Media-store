@@ -573,7 +573,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('ಕನ್ನಡ', callback_data='kan')
         ],[
             InlineKeyboardButton('English', callback_data='eng'),
-            InlineKeyboardButton('Telugu, callback_data='tel')
+            InlineKeyboardButton('Telugu', callback_data='tel')
         ],[
             InlineKeyboardButton('Tamil', callback_data='tam'),
             InlineKeyboardButton('Malayalam', callback_data='mal'),
