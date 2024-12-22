@@ -570,7 +570,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "lang":
         buttons = [[
-            InlineKeyboardButton('ಕನ್ನಡ, callback_data='kan')
+            InlineKeyboardButton('ಕನ್ನಡ', callback_data='kan')
         ],[
             InlineKeyboardButton('English', callback_data='eng'),
             InlineKeyboardButton('Telugu, callback_data='tel')
