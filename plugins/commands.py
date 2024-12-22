@@ -532,8 +532,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             print(e)  # print the error message
             await query.answer(f"â˜£something went wrong\n\n{e}", show_alert=True)
             return
-
-elif query.data == "settings":
+    
+    elif query.data == "settings":
         buttons = [[
             InlineKeyboardButton('Bot Language', callback_data='lang'),
             InlineKeyboardButton('Shortner', callback_data='short'),
@@ -597,9 +597,7 @@ elif query.data == "settings":
             parse_mode=enums.ParseMode.HTML
         )     
 
-
-
-elif query.data == "lang1":
+    elif query.data == "lang1":
         buttons = [[
             InlineKeyboardButton('Bot Language, callback_data='lang'),
             InlineKeyboardButton('Shortner', callback_data='short'),
@@ -632,7 +630,7 @@ elif query.data == "lang1":
         )       
         
 
-elif query.data == "short":
+    elif query.data == "short":
         buttons = [[
             InlineKeyboardButton('✔', callback_data='short_t'),
             InlineKeyboardButton('❌', callback_data='short_f')
@@ -655,7 +653,7 @@ elif query.data == "short":
         )        
         
     
-elif query.data == "short_f":
+    elif query.data == "short_f":
         db.update.user_data[user_id] ["shortner"] == False 
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='short')
@@ -677,7 +675,7 @@ elif query.data == "short_f":
         )            
         
         
-elif query.data == "short_t":
+    elif query.data == "short_t":
         db.update.user_data[user_id] ["shortner"] == True 
         If db.user_data[user_id] ["shorrtner-site, shortener-api"] == None:
         ssl = await client.ask(message.chat.id, "**Send your shoertner site link*")
@@ -707,7 +705,7 @@ elif query.data == "short_t":
         )
         
         
-elif query.data == "l_short":
+    elif query.data == "l_short":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='short_t')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -729,7 +727,7 @@ elif query.data == "l_short":
                
         
         
-elif query.data == "verify_t":
+    elif query.data == "verify_t":
         buttons = [[
             InlineKeyboardButton('Daily', callback_data='d_verify'),
             InlineKeyboardButton('Per Hours', callback_data='h_verify'),
@@ -753,7 +751,7 @@ elif query.data == "verify_t":
         )        
         
         
-elif query.data == "d_verify":
+    elif query.data == "d_verify":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='verify_t')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -774,7 +772,7 @@ elif query.data == "d_verify":
         )        
         
         
-elif query.data == "h_verify":
+    elif query.data == "h_verify":
         buttons = [[
             InlineKeyboardButton('3️⃣', callback_data='h_verify3'),
             InlineKeyboardButton('6️⃣', callback_data='h_verify6'),
@@ -798,7 +796,7 @@ elif query.data == "h_verify":
             parse_mode=enums.ParseMode.HTML
         )                
         
-elif query.data == "h_verify3":
+    elif query.data == "h_verify3":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='h_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -819,7 +817,7 @@ elif query.data == "h_verify3":
         )        
 
 
-elif query.data == "h_verify6":
+    elif query.data == "h_verify6":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='h_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -840,7 +838,7 @@ elif query.data == "h_verify6":
         )        
 
 
-elif query.data == "h_verify12":
+    elif query.data == "h_verify12":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='h_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -861,7 +859,7 @@ elif query.data == "h_verify12":
         )        
 
 
-elif query.data == "h_verify24":
+    elif query.data == "h_verify24":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='h_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -882,7 +880,7 @@ elif query.data == "h_verify24":
         )                
         
         
-elif query.data == "f_verify":
+    elif query.data == "f_verify":
         buttons = [[
             InlineKeyboardButton('3️⃣', callback_data='f_verify3'),
             InlineKeyboardButton('5️⃣', callback_data='f_verify5'),
@@ -908,7 +906,7 @@ elif query.data == "f_verify":
         
 
 
-elif query.data == "f_verify3":
+    elif query.data == "f_verify3":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='f_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -929,7 +927,7 @@ elif query.data == "f_verify3":
         )           
 
 
-elif query.data == "f_verify5":
+    elif query.data == "f_verify5":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='f_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -950,7 +948,7 @@ elif query.data == "f_verify5":
         )        
 
 
-elif query.data == "f_verify8":
+    elif query.data == "f_verify8":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='f_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -971,7 +969,7 @@ elif query.data == "f_verify8":
         )        
 
 
-elif query.data == "f_verify10":
+    elif query.data == "f_verify10":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='f_verify')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -991,8 +989,7 @@ elif query.data == "f_verify10":
             parse_mode=enums.ParseMode.HTML
         )                             
         
-        
-  elif query.data == "file_access":
+    elif query.data == "file_access":
         buttons = [[
             InlineKeyboardButton('✔, callback_data='file_access_t'),
             InlineKeyboardButton('❌', callback_data='file_access_f')
@@ -1015,7 +1012,7 @@ elif query.data == "f_verify10":
         )                      
 
         
-elif query.data == "file_access_t":
+    elif query.data == "file_access_t":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='verify_t')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -1036,7 +1033,7 @@ elif query.data == "file_access_t":
         )        
 
 
-elif query.data == "file_access_f":
+    elif query.data == "file_access_f":
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='verify_t')
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -1056,7 +1053,7 @@ elif query.data == "file_access_f":
             parse_mode=enums.ParseMode.HTML
         )    
         
-elif query.data == "vlc":
+    elif query.data == "vlc":
         buttons = [[       
             InlineKeyboardButton('✔', callback_data='vlcid'),
             InlineKeyboardButton('❌', callback_data='vlc_f)
@@ -1079,7 +1076,7 @@ elif query.data == "vlc":
             parse_mode=enums.ParseMode.HTML
         )
 
-elif query.data == "vlcid":
+    elif query.data == "vlcid":
         If db.user_data[user_id] ["verify_log_c"] == None:
              vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
         else:
