@@ -429,8 +429,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -470,8 +470,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('Settings', callback_data='settings'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -487,7 +488,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )  
-
+        
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
         try:
@@ -539,15 +540,15 @@ elif query.data == "settings":
             InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
         ],[
             InlineKeyboardButton('File Access', callback_data='fileaccess'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('User Premium', callback_data='u_premium'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
         ],[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start')
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='start'),
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -569,7 +570,7 @@ elif query.data == "settings":
 
     elif query.data == "lang":
         buttons = [[
-            InlineKeyboardButton('à²•à²¨à³à²¨à²¡, callback_data='kan')
+            InlineKeyboardButton('ಕನ್ನಡ, callback_data='kan')
         ],[
             InlineKeyboardButton('English', callback_data='eng'),
             InlineKeyboardButton('Telugu, callback_data='tel')
@@ -578,8 +579,8 @@ elif query.data == "settings":
             InlineKeyboardButton('Malayalam', callback_data='mal'),
             InlineKeyboardButton('Hindi', callback_data='hin')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='settings'),
-            InlineKeyboardButton('â–¶ï¸', callback_data='lang1')
+            InlineKeyboardButton('◀️', callback_data='settings'),
+            InlineKeyboardButton('▶️', callback_data='lang1')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -605,15 +606,15 @@ elif query.data == "lang1":
             InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
         ],[
             InlineKeyboardButton('File Access', callback_data='file-access'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
         ],[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start')
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='lang'),
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='lang'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -633,10 +634,10 @@ elif query.data == "lang1":
 
 elif query.data == "short":
         buttons = [[
-            InlineKeyboardButton('âœ”', callback_data='short_t'),
-            InlineKeyboardButton('âŒ', callback_data='short_f')
+            InlineKeyboardButton('✔', callback_data='short_t'),
+            InlineKeyboardButton('❌', callback_data='short_f')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='settings')
+            InlineKeyboardButton('◀️', callback_data='settings')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -655,9 +656,10 @@ elif query.data == "short":
         
     
 elif query.data == "short_f":
+        db.update.user_data[user_id] ["shortner"] == False 
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='short')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='short')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -676,11 +678,18 @@ elif query.data == "short_f":
         
         
 elif query.data == "short_t":
+        db.update.user_data[user_id] ["shortner"] == True 
+        If db.user_data[user_id] ["shorrtner-site, shortener-api"] == None:
+        ssl = await client.ask(message.chat.id, "**Send your shoertner site link*")
+        sapi = await client.ask(message.chat.id, "**Send your shoertner api*")
+        db.update.user_data[user_id] ["shortner-site"] == ssl 
+        db.update.user_data[user_id] ["shortner-api"] == sapi 
+        return
         buttons = [[
             InlineKeyboardButton('Verify', callback_data='verify_t'),
             InlineKeyboardButton('Link Shortner', callback_data='l_short')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='short')
+            InlineKeyboardButton('◀️', callback_data='short')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -698,10 +707,10 @@ elif query.data == "short_t":
         )
         
         
-elif query.data == "link_short":
+elif query.data == "l_short":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='short_t')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -710,13 +719,14 @@ elif query.data == "link_short":
         )
         reply_markup = InlineKeyboardMarkup(buttons)
         user_id = query.from_user.id 
-        txt = script.ABOUT_TXT
+        txt = script.L_SHORT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
             text=ttxt,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                
+               
         
         
 elif query.data == "verify_t":
@@ -725,7 +735,7 @@ elif query.data == "verify_t":
             InlineKeyboardButton('Per Hours', callback_data='h_verify'),
             InlineKeyboardButton('Per Files', callback_data='f_verify')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+            InlineKeyboardButton('◀️', callback_data='short_t')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -734,7 +744,7 @@ elif query.data == "verify_t":
         )
         reply_markup = InlineKeyboardMarkup(buttons)
         user_id = query.from_user.id 
-        txt = script.ABOUT_TXT
+        txt = script.VERIFY_T__TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
             text=ttxt,
@@ -745,8 +755,8 @@ elif query.data == "verify_t":
         
 elif query.data == "d_verify":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -755,7 +765,7 @@ elif query.data == "d_verify":
         )
         reply_markup = InlineKeyboardMarkup(buttons)
         user_id = query.from_user.id 
-        txt = script.ABOUT_TXT
+        txt = script.D_VERIFY_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
             text=ttxt,
@@ -766,12 +776,12 @@ elif query.data == "d_verify":
         
 elif query.data == "h_verify":
         buttons = [[
-            InlineKeyboardButton('3ï¸âƒ£', callback_data='h_verify3'),
-            InlineKeyboardButton('6ï¸âƒ£', callback_data='h_verify6'),
-            InlineKeyboardButton('1ï¸âƒ£2ï¸âƒ£', callback_data='h_verify12'),
-            InlineKeyboardButton('2ï¸âƒ£4ï¸âƒ£', callback_data='h_verify24')
+            InlineKeyboardButton('3️⃣', callback_data='h_verify3'),
+            InlineKeyboardButton('6️⃣', callback_data='h_verify6'),
+            InlineKeyboardButton('1️⃣2️⃣', callback_data='h_verify12'),
+            InlineKeyboardButton('2️⃣4️⃣', callback_data='h_verify24')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+            InlineKeyboardButton('◀️', callback_data='short_t')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -780,7 +790,7 @@ elif query.data == "h_verify":
         )
         reply_markup = InlineKeyboardMarkup(buttons)
         user_id = query.from_user.id 
-        txt = script.ABOUT_TXT
+        txt = script.H_VERIFY_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
             text=ttxt,
@@ -790,8 +800,8 @@ elif query.data == "h_verify":
         
 elif query.data == "h_verify3":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -811,8 +821,8 @@ elif query.data == "h_verify3":
 
 elif query.data == "h_verify6":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -832,8 +842,8 @@ elif query.data == "h_verify6":
 
 elif query.data == "h_verify12":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -853,8 +863,8 @@ elif query.data == "h_verify12":
 
 elif query.data == "h_verify24":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='h_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -874,12 +884,12 @@ elif query.data == "h_verify24":
         
 elif query.data == "f_verify":
         buttons = [[
-            InlineKeyboardButton('3ï¸âƒ£', callback_data='f_verify3'),
-            InlineKeyboardButton('5ï¸âƒ£', callback_data='f_verify5'),
-            InlineKeyboardButton('8ï¸âƒ£', callback_data='f_verify8'),
-            InlineKeyboardButton('1ï¸âƒ£0ï¸âƒ£', callback_data='f_verify10')
+            InlineKeyboardButton('3️⃣', callback_data='f_verify3'),
+            InlineKeyboardButton('5️⃣', callback_data='f_verify5'),
+            InlineKeyboardButton('8️⃣', callback_data='f_verify8'),
+            InlineKeyboardButton('1️⃣0️⃣', callback_data='f_verify10')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+            InlineKeyboardButton('◀️', callback_data='short_t')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -895,12 +905,13 @@ elif query.data == "f_verify":
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
+        
 
 
 elif query.data == "f_verify3":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -915,13 +926,13 @@ elif query.data == "f_verify3":
             text=ttxt,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-        )        
+        )           
 
 
 elif query.data == "f_verify5":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -941,8 +952,8 @@ elif query.data == "f_verify5":
 
 elif query.data == "f_verify8":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -962,8 +973,8 @@ elif query.data == "f_verify8":
 
 elif query.data == "f_verify10":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='f_verify')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -983,10 +994,10 @@ elif query.data == "f_verify10":
         
   elif query.data == "file_access":
         buttons = [[
-            InlineKeyboardButton('âœ”, callback_data='file_access_t'),
-            InlineKeyboardButton('âŒ', callback_data='file_access_f')
+            InlineKeyboardButton('✔, callback_data='file_access_t'),
+            InlineKeyboardButton('❌', callback_data='file_access_f')
         ],[
-            InlineKeyboardButton('â—€ï¸', callback_data='short_t')
+            InlineKeyboardButton('◀️', callback_data='short_t')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1006,8 +1017,8 @@ elif query.data == "f_verify10":
         
 elif query.data == "file_access_t":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1027,8 +1038,8 @@ elif query.data == "file_access_t":
 
 elif query.data == "file_access_f":
         buttons = [[       
-            InlineKeyboardButton('â—€ï¸', callback_data='verify_t')
-            InlineKeyboardButton('âŒ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -1044,4 +1055,50 @@ elif query.data == "file_access_f":
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )    
+        
+elif query.data == "vlc":
+        buttons = [[       
+            InlineKeyboardButton('✔', callback_data='vlcid'),
+            InlineKeyboardButton('❌', callback_data='vlc_f)
+       ],[
+            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.VLC_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
 
+elif query.data == "vlcid":
+        If db.user_data[user_id] ["verify_log_c"] == None:
+             vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
+        else:
+              buttons = [[       
+             ],[
+               InlineKeyboardButton('◀️', callback_data='verify_t')
+               InlineKeyboardButton('❌', callback_data='close_data')
+            ]]
+           await client.edit_message_media(
+               query.message.chat.id, 
+               query.message.id, 
+               InputMediaPhoto(random.choice(PICS))
+           )
+           reply_markup = InlineKeyboardMarkup(buttons)
+           user_id = query.from_user.id 
+           txt = script.VLC_TXT
+           ttxt = await translate_text(txt, user_id)    
+           await query.message.edit_text(
+                text=ttxt,
+               reply_markup=reply_markup,
+               parse_mode=enums.ParseMode.HTML
+           )                   
