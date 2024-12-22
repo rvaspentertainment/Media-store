@@ -1,12 +1,26 @@
 import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, http.client
 from datetime import date, datetime
-from config import SHORTLINK_API, SHORTLINK_URL
+from config import SHORTLINK_API, SHORTLINK_URL, AUTH_CHANNEL
 from shortzy import Shortzy
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TOKENS = {}
 VERIFIED = {}
+
+async def is_subscribed(bot, query):
+    try:
+        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+    except UserNotParticipant:
+        pass
+    except Exception as e:
+        logger.exception(e)
+    else:
+        if user.status != enums.ChatMemberStatus.BANNED:
+            return True
+    return False 
+
+
 
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
