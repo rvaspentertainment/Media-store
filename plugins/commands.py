@@ -599,7 +599,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "lang1":
         buttons = [[
-            InlineKeyboardButton('Bot Language, callback_data='lang'),
+            InlineKeyboardButton('Bot Language', callback_data='lang'),
             InlineKeyboardButton('Shortner', callback_data='short'),
             InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
         ],[
@@ -656,7 +656,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "short_f":
         db.update.user_data[user_id] ["shortner"] == False 
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='short')
+            InlineKeyboardButton('◀️', callback_data='short'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -707,7 +707,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "l_short":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='short_t')
+            InlineKeyboardButton('◀️', callback_data='short_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -753,7 +753,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "d_verify":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -798,7 +798,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "h_verify3":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -819,7 +819,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "h_verify6":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -840,7 +840,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "h_verify12":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -861,7 +861,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "h_verify24":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='h_verify')
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -908,7 +908,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "f_verify3":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -929,7 +929,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "f_verify5":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -950,7 +950,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "f_verify8":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -971,7 +971,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "f_verify10":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='f_verify')
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -991,7 +991,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "file_access":
         buttons = [[
-            InlineKeyboardButton('✔, callback_data='file_access_t'),
+            InlineKeyboardButton('✔', callback_data='file_access_t'),
             InlineKeyboardButton('❌', callback_data='file_access_f')
         ],[
             InlineKeyboardButton('◀️', callback_data='short_t')
@@ -1014,7 +1014,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "file_access_t":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -1035,7 +1035,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "file_access_f":
         buttons = [[       
-            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -1058,7 +1058,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('✔', callback_data='vlcid'),
             InlineKeyboardButton('❌', callback_data='vlc_f)
        ],[
-            InlineKeyboardButton('◀️', callback_data='verify_t')
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
@@ -1082,7 +1082,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         else:
               buttons = [[       
              ],[
-               InlineKeyboardButton('◀️', callback_data='verify_t')
+               InlineKeyboardButton('◀️', callback_data='verify_t'),
                InlineKeyboardButton('❌', callback_data='close_data')
             ]]
            await client.edit_message_media(
