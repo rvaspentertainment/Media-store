@@ -1056,7 +1056,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "vlc":
         buttons = [[       
             InlineKeyboardButton('✔', callback_data='vlcid'),
-            InlineKeyboardButton('❌', callback_data='vlc_f)
+            InlineKeyboardButton('❌', callback_data='vlc_f')
        ],[
             InlineKeyboardButton('◀️', callback_data='verify_t'),
             InlineKeyboardButton('❌', callback_data='close_data')
