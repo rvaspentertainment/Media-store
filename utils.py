@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TOKENS = {}
 VERIFIED = {}
+BOT_RUN = False 
 
 async def is_subscribed(bot, query):
     try:
@@ -23,7 +24,7 @@ async def is_subscribed(bot, query):
 
 @Client.on_message(filters.private & filters.command & filters.incoming)
 async def ban_reply(bot, message):
-    if not BOT_RUN:
+    if not BOT_RUN and not in ADMINS:
         await message.reply(f'The bot is still under development. It will be officially released in January or February 2025.\n\nCurrently, this is made public only for introduction purposes, but it is not yet ready for use.')
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
