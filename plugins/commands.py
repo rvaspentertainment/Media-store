@@ -677,7 +677,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     elif query.data == "short_t":
         db.update.user_data[user_id] ["shortner"] == True 
-        If db.user_data[user_id] ["shorrtner-site, shortener-api"] == None:
+        if db.user_data[user_id]["shortener-site", "shortener-api"] is None:
         ssl = await client.ask(message.chat.id, "**Send your shoertner site link*")
         sapi = await client.ask(message.chat.id, "**Send your shoertner api*")
         db.update.user_data[user_id] ["shortner-site"] == ssl 
