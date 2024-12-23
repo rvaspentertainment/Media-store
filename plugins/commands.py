@@ -652,7 +652,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
     
     elif query.data == "short_f":
-        db.update.user_data[user_id] ["shortner"] == False 
+        db.update.user_data[query.from_user.id] ["shortner"] == False 
         buttons = [[       
             InlineKeyboardButton('◀️', callback_data='short'),
             InlineKeyboardButton('❌', callback_data='close_data')
@@ -674,8 +674,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         
     elif query.data == "short_t":
-        db.update.user_data[user_id] ["shortner"] == True 
-        if db.user_data[user_id]["shortener-site", "shortener-api"] is None:
+        db.update.user_data[query.from_user.id] ["shortner"] == True 
+        if db.user_data[query.from_user.id+]["shortener-site", "shortener-api"] is None:
             ssl = await client.ask(message.chat.id, "**Send your shoertner site link*")
             sapi = await client.ask(message.chat.id, "**Send your shoertner api*")
             db.update.user_data[user_id] ["shortner-site"] == ssl 
@@ -1075,7 +1075,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
 
     elif query.data == "vlcid":
-        If db.user_data[user_id] ["verify_log_c"] == None:
+        
+        If db.user_data[query.from_user.id] ["verify_log_c"] is None:
              vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
         else:
               buttons = [[       
