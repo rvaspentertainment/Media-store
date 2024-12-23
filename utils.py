@@ -2,6 +2,7 @@ import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, 
 from datetime import date, datetime
 from config import SHORTLINK_API, SHORTLINK_URL, AUTH_CHANNEL
 from shortzy import Shortzy
+from pyrogram.types import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -20,8 +21,10 @@ async def is_subscribed(bot, query):
             return True
     return False 
 
-
-
+@Client.on_message(filters.private & filters.command & filters.incoming)
+async def ban_reply(bot, message):
+    if not BOT_RUN:
+        await message.reply(f'The bot is still under development. It will be officially released in January or February 2025.\n\nCurrently, this is made public only for introduction purposes, but it is not yet ready for use.')
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
         url = f'https://{SHORTLINK_URL}/easy_api'
