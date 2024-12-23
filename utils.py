@@ -1,6 +1,6 @@
 import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, http.client
 from datetime import date, datetime
-from config import SHORTLINK_API, SHORTLINK_URL, AUTH_CHANNEL
+from config import SHORTLINK_API, SHORTLINK_URL, AUTH_CHANNEL, ADMINS, BOT_RUN 
 from shortzy import Shortzy
 from pyrogram.types import *
 
@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TOKENS = {}
 VERIFIED = {}
-BOT_RUN = False 
 
 async def is_subscribed(bot, query):
     try:
@@ -21,6 +20,16 @@ async def is_subscribed(bot, query):
         if user.status != enums.ChatMemberStatus.BANNED:
             return True
     return False 
+
+async def translate_text(txt, user_id): 
+    dest_lang = 'kn'  # Default to English if not set
+    if dest_lang == 'en':  # Skip translation if already English
+        return txt
+    try:
+        translated = translator.translate(txt, dest=dest_lang)
+        return translated.text
+    except Exception as e:
+        await message.reply_text(f"Error: {str(e)}")
 
 @Client.on_message(filters.private & filters.command & filters.incoming)
 async def ban_reply(bot, message):
