@@ -417,8 +417,8 @@ async def start(client, message):
             await asyncio.sleep(AUTO_DELETE_TIME)
             try:
                 await x.delete()
-                except:
-                    pass
+            except:
+                pass
             await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")       
         
 
