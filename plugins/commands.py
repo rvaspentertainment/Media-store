@@ -10,7 +10,7 @@ from plugins.users_api import get_user, update_user_info
 from plugins.database import get_file_details
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
-from utils import verify_user, check_token, check_verification, get_token, is_subscribed
+from utils import verify_user, check_token, check_verification, get_token, is_subscribed, translate_text
 from config import *
 import re
 from googletrans import Translator
@@ -74,15 +74,7 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
-async def translate_text(txt, user_id): 
-    dest_lang = 'kn'  # Default to English if not set
-    if dest_lang == 'en':  # Skip translation if already English
-        return txt
-    try:
-        translated = translator.translate(txt, dest=dest_lang)
-        return translated.text
-    except Exception as e:
-        await message.reply_text(f"Error: {str(e)}")
+
 
 @Client.on_message(filters.command("tr") & filters.incoming)
 async def tr(client, message):
@@ -425,6 +417,12 @@ async def start(client, message):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    if not BOT_RUN and callback_query.from_user.id not in ADMINS:
+        await callback_query.answer(
+            text='Bot is under maintenance.',
+            show_alert=True  # Show as an alert instead of a toast
+        )
+        return
     if query.data == "close_data":
         await query.message.delete()
     elif query.data == "about":
