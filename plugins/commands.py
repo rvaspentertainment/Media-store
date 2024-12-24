@@ -113,12 +113,13 @@ async def start(client, message):
             "joined": await dati()
             }    
         await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
-
+        return 
+        
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
-            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about'),
-            InlineKeyboardButton('âš™ Bot settings', callback_data='settings')
+            InlineKeyboardButton('📖 Help', callback_data='help'),
+            InlineKeyboardButton('😊 About', callback_data='about'),
+            InlineKeyboardButton('⚙️ Bot settings', callback_data='settings')
         ]]
         if CLONE_MODE == True:
             buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
