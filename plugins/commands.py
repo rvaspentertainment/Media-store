@@ -119,30 +119,30 @@ async def start(client, message):
                 {"id": user_data["id"]}, {"$set": user_data}, upsert=True
             )
             return
-
-    if len(message.command) != 2:
-        buttons = [[
-            InlineKeyboardButton('📖 Help', callback_data='help'),
-            InlineKeyboardButton('😊 About', callback_data='about'),
-            InlineKeyboardButton('⚙️ Bot settings', callback_data='settings')
-        ]]
-        if CLONE_MODE:
-            buttons.append([
-                InlineKeyboardButton(
-                    '🤖 Create Your Own Clone Bot',
-                    callback_data='clone'
+            
+        if len(message.command) != 2:
+            buttons = [[
+                InlineKeyboardButton('📖 Help', callback_data='help'),
+                InlineKeyboardButton('😊 About', callback_data='about'),
+                InlineKeyboardButton('⚙️ Bot settings', callback_data='settings')
+            ]]
+            if CLONE_MODE:
+                buttons.append([
+                    InlineKeyboardButton(
+                        '🤖 Create Your Own Clone Bot',
+                        callback_data='clone'
+                    )
+                ])
+                reply_markup = InlineKeyboardMarkup(buttons)
+                me2 = (await client.get_me()).mention
+                txt = script.START_TXT.format(message.from_user.mention, me2)
+                ttxt = await translate_text(txt, message.from_user.id)
+                await message.reply_photo(
+                    photo=random.choice(PICS),
+                    caption=ttxt,
+                    reply_markup=reply_markup
                 )
-            ])
-            reply_markup = InlineKeyboardMarkup(buttons)
-            me2 = (await client.get_me()).mention
-            txt = script.START_TXT.format(message.from_user.mention, me2)
-            ttxt = await translate_text(txt, message.from_user.id)
-            await message.reply_photo(
-                photo=random.choice(PICS),
-                caption=ttxt,
-                reply_markup=reply_markup
-            )
-            return
+                return
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
