@@ -1085,17 +1085,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
                InlineKeyboardButton('◀️', callback_data='verify_t'),
                InlineKeyboardButton('❌', callback_data='close_data')
             ]]
-           await client.edit_message_media(
-               query.message.chat.id, 
-               query.message.id, 
-               InputMediaPhoto(random.choice(PICS))
-           )
-           reply_markup = InlineKeyboardMarkup(buttons)
-           user_id = query.from_user.id 
-           txt = script.VLC_TXT
-           ttxt = await translate_text(txt, user_id)    
-           await query.message.edit_text(
-                text=ttxt,
-               reply_markup=reply_markup,
-               parse_mode=enums.ParseMode.HTML
-           )                   
+            await client.edit_message_media(
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))
+            )
+            reply_markup = InlineKeyboardMarkup(buttons)
+            user_id = query.from_user.id 
+            txt = script.VLC_TXT
+            ttxt = await translate_text(txt, user_id)    
+            await query.message.edit_text(
+                 text=ttxt,
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML
+            )                   
