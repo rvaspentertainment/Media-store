@@ -86,53 +86,66 @@ async def tr(client, message):
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
-
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
-    username = (await client.get_me()).username
-    if not await db.is_user_exist(message.from_user.id):
-        await db.add_user(message.from_user.id, message.from_user.first_name)
-        await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
-    if not await db.user_data.find_one({"id": message.from_user.id}):
-        user_data = {
-            "id": message.from_user.id,
-            "bot_lang": 'en',
-            "file_stored": 0,
-            "files_taken": 0,
-            "files": [],
-            "premium-users": [],
-            "shortner-type": None,
-            "verify-type": None,
-            "verify-hrs": 'Daily',
-            "verify-files": 10,
-            "verify-logs-c": None,
-            "shotner-site": None,
-            "shotner-api": None,
-            "fsub": None,
-            "file-access": False, 
-            "joined": await dati()
-            }    
-        await db.user_data.update_one({"id": user_data["id"]}, {"$set": user_data}, upsert=True)
-        return 
-        
+    try:
+        username = (await client.get_me()).username
+        if not await db.is_user_exist(message.from_user.id):
+            await db.add_user(message.from_user.id, message.from_user.first_name)
+            await client.send_message(
+                LOG_CHANNEL,
+                script.LOG_TEXT.format(message.from_user.id, message.from_user.mention)
+            )
+        if not await db.user_data.find_one({"id": message.from_user.id}):
+            user_data = {
+                "id": message.from_user.id,
+                "bot_lang": 'en',
+                "file_stored": 0,
+                "files_taken": 0,
+                "files": [],
+                "premium-users": [],
+                "shortner-type": None,
+                "verify-type": None,
+                "verify-hrs": 'Daily',
+                "verify-files": 10,
+                "verify-logs-c": None,
+                "shotner-site": None,
+                "shotner-api": None,
+                "fsub": None,
+                "file-access": False,
+                "joined": await dati()
+            }
+            await db.user_data.update_one(
+                {"id": user_data["id"]}, {"$set": user_data}, upsert=True
+            )
+            return
+
     if len(message.command) != 2:
         buttons = [[
             InlineKeyboardButton('📖 Help', callback_data='help'),
             InlineKeyboardButton('😊 About', callback_data='about'),
             InlineKeyboardButton('⚙️ Bot settings', callback_data='settings')
         ]]
-        if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
-        reply_markup = InlineKeyboardMarkup(buttons)
-        me2 = (await client.get_me()).mention
-        txt = script.START_TXT.format(message.from_user.mention, me2)
-        ttxt = await translate_text(txt, message.from_user.id) 
-        await message.reply_photo(
-            photo=random.choice(PICS),
-            caption=ttxt,
-            reply_markup=reply_markup
-        )
-        return
+        if CLONE_MODE:
+            buttons.append([
+                InlineKeyboardButton(
+                    '🤖 Create Your Own Clone Bot',
+                    callback_data='clone'
+                )
+            ])
+            reply_markup = InlineKeyboardMarkup(buttons)
+            me2 = (await client.get_me()).mention
+            txt = script.START_TXT.format(message.from_user.mention, me2)
+            ttxt = await translate_text(txt, message.from_user.id)
+            await message.reply_photo(
+                photo=random.choice(PICS),
+                caption=ttxt,
+                reply_markup=reply_markup
+            )
+            return
+    except Exception as e:
+        await message.reply_text(f"Error: {str(e)}")
+
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
