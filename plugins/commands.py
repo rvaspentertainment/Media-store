@@ -415,10 +415,11 @@ async def start(client, message):
         
 
 
+
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
-    if not BOT_RUN and callback_query.from_user.id not in ADMINS:
-        await callback_query.answer(
+    if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
+        await query.answer(
             text='Bot is under maintenance.',
             show_alert=True  # Show as an alert instead of a toast
         )
