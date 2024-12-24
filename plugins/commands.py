@@ -674,13 +674,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         
     elif query.data == "short_t":
-        db.update.user_data[query.from_user.id] ["shortner"] == True 
-        if db.user_data[query.from_user.id+]["shortener-site", "shortener-api"] is None:
-            ssl = await client.ask(message.chat.id, "**Send your shoertner site link*")
-            sapi = await client.ask(message.chat.id, "**Send your shoertner api*")
-            db.update.user_data[user_id] ["shortner-site"] == ssl 
-            db.update.user_data[user_id] ["shortner-api"] == sapi 
-            return
+        db.update.user_data[query.from_user.id]["shortner"] = True
+        if (db.user_data[query.from_user.id].get("shortener-site") is None or 
+            db.user_data[query.from_user.id].get("shortener-api") is None):
+                ssl = await client.ask(message.chat.id, "**Send your shortener site link**")
+                sapi = await client.ask(message.chat.id, "**Send your shortener API**")
+                db.update.user_data[query.from_user.id]["shortener-site"] = ssl
+                db.update.user_data[query.from_user.id]["shortener-api"] = sapi
+                return
         buttons = [[
             InlineKeyboardButton('Verify', callback_data='verify_t'),
             InlineKeyboardButton('Link Shortner', callback_data='l_short')
