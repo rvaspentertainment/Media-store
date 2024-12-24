@@ -1080,10 +1080,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if db.user_data[query.from_user.id] ["verify_log_c"] is None:
              vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
         else:
-              buttons = [[       
-             ],[
-               InlineKeyboardButton('◀️', callback_data='verify_t'),
-               InlineKeyboardButton('❌', callback_data='close_data')
+            buttons = [[
+                InlineKeyboardButton('◀️', callback_data='verify_t'),
+                InlineKeyboardButton('❌', callback_data='close_data')
             ]]
             await client.edit_message_media(
                 query.message.chat.id, 
