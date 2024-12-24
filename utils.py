@@ -2,7 +2,7 @@ import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, 
 from datetime import date, datetime
 from config import SHORTLINK_API, SHORTLINK_URL, AUTH_CHANNEL, ADMINS, BOT_RUN 
 from shortzy import Shortzy
-from pyrogram.types import *
+from pyrogram import Client, filters 
 from googletrans import Translator
 
 logger = logging.getLogger(__name__)
