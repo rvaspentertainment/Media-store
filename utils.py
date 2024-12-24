@@ -36,6 +36,7 @@ async def translate_text(txt, user_id):
 async def ban_reply(bot, message):
     if not BOT_RUN and message.from_user.id not in ADMINS:
         await message.reply(f'The bot is still under development. It will be officially released in January or February 2025.\n\nCurrently, this is made public only for introduction purposes, but it is not yet ready for use.')
+        return 
         
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
