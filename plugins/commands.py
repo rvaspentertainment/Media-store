@@ -1077,7 +1077,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "vlcid":
         
-        If db.user_data[query.from_user.id] ["verify_log_c"] is None:
+        if db.user_data[query.from_user.id] ["verify_log_c"] is None:
              vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
         else:
               buttons = [[       
