@@ -408,12 +408,18 @@ async def base_site_handler(client, m: Message):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
+        await query.answer(
+            text='Bot is under maintenance.',
+            show_alert=True  # Show as an alert instead of a toast
+        )
+        return
     if query.data == "close_data":
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -421,28 +427,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InputMediaPhoto(random.choice(PICS))
         )
         reply_markup = InlineKeyboardMarkup(buttons)
-        me2 = (await client.get_me()).mention
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=script.ABOUT_TXT.format(me2),
+            text=ttxt,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('💝 sᴜʙsᴄʀɪʙᴇ ᴍʏ ʏᴏᴜᴛᴜʙᴇ ᴄʜᴀɴɴᴇʟ', url='https://youtube.com/@Tech_VJ')
-            ],[
-            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/vj_bot_disscussion'),
-            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
-            ],[
-            InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')
-            ],[
-            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
+            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
+            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about'),
+            InlineKeyboardButton('âš™ Bot settings', callback_data='settings')
         ]]
         
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -451,65 +449,40 @@ async def cb_handler(client: Client, query: CallbackQuery):
             query.message.id, 
             InputMediaPhoto(random.choice(PICS))
         )
-        me2 = (await client.get_me()).mention
+        txt = script.START_TXT.format(query.from_user.id)
+        ttxt = await translate_text(txt, user_id) 
         await query.message.edit_text(
-            text=script.START_TXT.format(query.from_user.mention, me2),
+            text=ttxt,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-    
-    elif query.data == "clone":
-        buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
-        ]]
-        await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
-        )
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await query.message.edit_text(
-            text=script.CLONE_TXT.format(query.from_user.mention),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-        )          
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
     
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('Settings', callback_data='settings'),
+            InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
             query.message.id, 
             InputMediaPhoto(random.choice(PICS))
         )
+        user_id = query.from_user.id 
+        txt = script.HELP_TXT
+        ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=script.HELP_TXT,
+            text=ttxt,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )  
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
+        
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
         try:
             user_id = query.from_user.id
             username =  query.from_user.mention 
-
             log_msg = await client.send_cached_media(
                 chat_id=LOG_CHANNEL,
                 file_id=file_id,
@@ -517,44 +490,603 @@ async def cb_handler(client: Client, query: CallbackQuery):
             fileName = {quote_plus(get_name(log_msg))}
             stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
             download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
-
-            xo = await query.message.reply_text(f'🔐')
+            xo = await query.message.reply_text(f'ðŸ”')
             await asyncio.sleep(1)
             await xo.delete()
-
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
             button = [[
-                InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
             ]]
             reply_markup=InlineKeyboardMarkup(button)
             await log_msg.reply_text(
-                text=f"•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id} \n•• ᴜꜱᴇʀɴᴀᴍᴇ : {username} \n\n•• ᖴᎥᒪᗴ Nᗩᗰᗴ : {fileName}",
+                text=f"â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… êœ°á´Ê€ Éªá´… #{user_id} \nâ€¢â€¢ á´œêœ±á´‡Ê€É´á´€á´á´‡ : {username} \n\nâ€¢â€¢ á–´áŽ¥á’ªá—´ Ná—©á—°á—´ : {fileName}",
                 quote=True,
                 disable_web_page_preview=True,
                 reply_markup=reply_markup
             )
             button = [[
-                InlineKeyboardButton("🚀 Fast Download 🚀", url=download),  # we download Link
-                InlineKeyboardButton('🖥️ Watch online 🖥️', url=stream)
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
             ],[
-                InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
+                InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
             ]]
             reply_markup=InlineKeyboardMarkup(button)
             await query.message.reply_text(
-                text="•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ☠︎⚔",
+                text="â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… â˜ ï¸Žâš”",
                 quote=True,
                 disable_web_page_preview=True,
                 reply_markup=reply_markup
             )
         except Exception as e:
             print(e)  # print the error message
-            await query.answer(f"☣something went wrong\n\n{e}", show_alert=True)
+            await query.answer(f"â˜£something went wrong\n\n{e}", show_alert=True)
             return
+    
+    elif query.data == "settings":
+        buttons = [[
+            InlineKeyboardButton('Bot Language', callback_data='lang'),
+            InlineKeyboardButton('Shortner', callback_data='short'),
+            InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
+        ],[
+            InlineKeyboardButton('File Access', callback_data='fileaccess'),
+            InlineKeyboardButton('User Premium', callback_data='u_premium'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        ],[
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='start'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.SET_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )  
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+
+
+
+    elif query.data == "lang":
+        buttons = [[
+            InlineKeyboardButton('ಕನ್ನಡ', callback_data='kan')
+        ],[
+            InlineKeyboardButton('English', callback_data='eng'),
+            InlineKeyboardButton('Telugu', callback_data='tel')
+        ],[
+            InlineKeyboardButton('Tamil', callback_data='tam'),
+            InlineKeyboardButton('Malayalam', callback_data='mal'),
+            InlineKeyboardButton('Hindi', callback_data='hin')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='settings'),
+            InlineKeyboardButton('▶️', callback_data='lang1')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.LANG_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )     
+
+    elif query.data == "lang1":
+        buttons = [[
+            InlineKeyboardButton('Bot Language', callback_data='lang'),
+            InlineKeyboardButton('Shortner', callback_data='short'),
+            InlineKeyboardButton('Force Subscribe (fsub)', callback_data='fsub')
+        ],[
+            InlineKeyboardButton('File Access', callback_data='file-access'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        ],[
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='lang'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        user_id = query.from_user.id 
+        txt = script.LANG_TXT
+        ttxt = await translate_text(txt, user_id)    
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )       
+        
+
+    elif query.data == "short":
+        buttons = [[
+            InlineKeyboardButton('✔', callback_data='short_t'),
+            InlineKeyboardButton('❌', callback_data='short_f')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='settings')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+    
+    elif query.data == "short_f":
+        db.update.user_data[query.from_user.id] ["shortner"] == False 
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='short'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_F_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )            
+        
+        
+    elif query.data == "short_t":
+        db.update.user_data[query.from_user.id]["shortner"] = True
+        if (db.user_data[query.from_user.id].get("shortener-site") is None or 
+            db.user_data[query.from_user.id].get("shortener-api") is None):
+                ssl = await client.ask(message.chat.id, "**Send your shortener site link**")
+                sapi = await client.ask(message.chat.id, "**Send your shortener API**")
+                db.update.user_data[query.from_user.id]["shortener-site"] = ssl
+                db.update.user_data[query.from_user.id]["shortener-api"] = sapi
+                return
+        buttons = [[
+            InlineKeyboardButton('Verify', callback_data='verify_t'),
+            InlineKeyboardButton('Link Shortner', callback_data='l_short')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='short')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.SHORT_T_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        
+        
+    elif query.data == "l_short":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='short_t'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.L_SHORT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+               
+        
+        
+    elif query.data == "verify_t":
+        buttons = [[
+            InlineKeyboardButton('Daily', callback_data='d_verify'),
+            InlineKeyboardButton('Per Hours', callback_data='h_verify'),
+            InlineKeyboardButton('Per Files', callback_data='f_verify')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.VERIFY_T__TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+        
+    elif query.data == "d_verify":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.D_VERIFY_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+        
+        
+    elif query.data == "h_verify":
+        buttons = [[
+            InlineKeyboardButton('3️⃣', callback_data='h_verify3'),
+            InlineKeyboardButton('6️⃣', callback_data='h_verify6'),
+            InlineKeyboardButton('1️⃣2️⃣', callback_data='h_verify12'),
+            InlineKeyboardButton('2️⃣4️⃣', callback_data='h_verify24')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.H_VERIFY_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+        
+    elif query.data == "h_verify3":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "h_verify6":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "h_verify12":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "h_verify24":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='h_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                
+        
+        
+    elif query.data == "f_verify":
+        buttons = [[
+            InlineKeyboardButton('3️⃣', callback_data='f_verify3'),
+            InlineKeyboardButton('5️⃣', callback_data='f_verify5'),
+            InlineKeyboardButton('8️⃣', callback_data='f_verify8'),
+            InlineKeyboardButton('1️⃣0️⃣', callback_data='f_verify10')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        
+
+
+    elif query.data == "f_verify3":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )           
+
+
+    elif query.data == "f_verify5":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "f_verify8":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "f_verify10":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='f_verify'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                             
+        
+    elif query.data == "file_access":
+        buttons = [[
+            InlineKeyboardButton('✔', callback_data='file_access_t'),
+            InlineKeyboardButton('❌', callback_data='file_access_f')
+        ],[
+            InlineKeyboardButton('◀️', callback_data='short_t')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )                      
+
+        
+    elif query.data == "file_access_t":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )        
+
+
+    elif query.data == "file_access_f":
+        buttons = [[       
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.ABOUT_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )    
+        
+    elif query.data == "vlc":
+        buttons = [[       
+            InlineKeyboardButton('✔', callback_data='vlcid'),
+            InlineKeyboardButton('❌', callback_data='vlc_f')
+       ],[
+            InlineKeyboardButton('◀️', callback_data='verify_t'),
+            InlineKeyboardButton('❌', callback_data='close_data')
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(buttons)
+        user_id = query.from_user.id 
+        txt = script.VLC_TXT
+        ttxt = await translate_text(txt, user_id)    
+        await query.message.edit_text(
+            text=ttxt,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+
+    elif query.data == "vlcid":
+        
+        if db.user_data[query.from_user.id] ["verify_log_c"] is None:
+             vj = await client.ask(message.chat.id, "**Forward any message from your log channel**")
+        else:
+            buttons = [[
+                InlineKeyboardButton('◀️', callback_data='verify_t'),
+                InlineKeyboardButton('❌', callback_data='close_data')
+            ]]
+            await client.edit_message_media(
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))
+            )
+            reply_markup = InlineKeyboardMarkup(buttons)
+            user_id = query.from_user.id 
+            txt = script.VLC_TXT
+            ttxt = await translate_text(txt, user_id)    
+            await query.message.edit_text(
+                 text=ttxt,
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML
+            )                   
+
