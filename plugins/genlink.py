@@ -50,6 +50,8 @@ async def incoming_gen_link(bot, message):
 
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.private)
 async def incoming_media(bot, message):
+    if not BOT_RUN and message.from_user.id not in ADMINS:
+        await message.reply(f'The bot is still under development. It will be officially released in January or February 2025.\n\nCurrently, this is made public only for introduction purposes, but it is not yet ready for use.')
     try:
         user_id = message.from_user.id
         media = message.document or message.video or message.audio
