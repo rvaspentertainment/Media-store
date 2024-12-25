@@ -4,7 +4,7 @@
 
 
 class script(object):
-    START_TXT = """<b>Hᴇʟʟᴏ {},ᴍʏ ɴᴀᴍᴇ {},【ɪ ᴀᴍ ʟᴀᴛᴇꜱᴛ ᴀᴅᴠᴀɴᴄᴇᴅ】ᴀɴᴅ ᴘᴏᴡᴇʀꜰᴜʟ ꜰɪʟᴇ ꜱᴛᴏʀᴇ ʙᴏᴛ +└ᴄʟᴏɴᴇ ғᴇᴀᴛᴜʀᴇ┘+└sᴛʀᴇᴀᴍ / ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴇᴀᴛᴜʀᴇ┘+├ᴄᴜꜱᴛᴏᴍ ᴜʀʟ ꜱʜᴏʀᴛɴᴇʀ ꜱᴜᴘᴘᴏʀᴛ┤+  ᢵᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ sᴜᴘᴘᴏʀᴛ ᢴ ᢾᴀɴᴅ ʙᴇꜱᴛ ᴜɪ ᴘᴇʀꜰᴏʀᴍᴀɴᴄᴇᢿ</b>"""
+    START_TXT = """Hi, welcome. how are you"""
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -39,24 +39,18 @@ If You Want To Remove Api Then Copy This And Send To Bot - `/api None`"""
 
 ɪғ ʏᴏᴜ ᴡᴀɴᴛ ᴛʜɪs ғᴇᴀᴛᴜʀᴇ ᴛʜᴇɴ ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ ғʀᴏᴍ ᴍʏ <a href=https://t.me/vj_botz>ᴘᴀʀᴇɴᴛ</a></b>"""
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
 
-    ABOUT_TXT = """<b>ʜɪ ɪ ᴀᴍ ᴘᴇʀᴍᴀɴᴇɴᴛ ғɪʟᴇ sᴛᴏʀᴇ ʙᴏᴛ ᴡɪᴛʜ ᴄʟᴏɴᴇ ғᴇᴀᴛᴜʀᴇ + ᴄᴜsᴛᴏᴍ ᴜʀʟ sʜᴏʀᴛɴᴇʀ ɪᴛ ᴍᴇᴀɴs ᴀɴʏ ᴜsᴇʀ ᴄᴀɴ sᴇᴛ ʜɪs ᴜʀʟ sʜᴏʀᴛɴᴇʀ ᴀɴᴅ + ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ.
+    ABOUT_TXT = """The bot can store your files for a long time (permanently).
 
-🤖 ᴍʏ ɴᴀᴍᴇ: {}
+If the bot receives a copyright-related file, the file will remain safe, but the file ID (link) may change in a new bot.
 
-📝 ʟᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>𝐏𝐲𝐭𝐡𝐨𝐧𝟑</a>
+You can configure settings such as link shorteners, verification steps, force subscribe (fsub), verification timings, and many more features.
 
-📚 ʟɪʙʀᴀʀʏ: <a href=https://docs.pyrogram.org>𝐏𝐲𝐫𝐨𝐠𝐫𝐚𝐦</a>
+The bot stores your file links (file IDs), so when users access your link, the bot processes it according to your configured settings.
 
-🧑🏻‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ: <a href=https://t.me/Kingvj01>𝐓𝐞𝐜𝐡 𝐕𝐉</a>
+The bot can also display all your stored files to your users if you grant access. This feature works only when you generate a link (not a file link) and share it with your users. We do not store user details. Instead, the link provides necessary user information.
 
-👥 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ: <a href=https://t.me/VJ_Bot_Disscussion>𝐕𝐉 𝐒𝐮𝐩𝐩𝐨𝐫𝐭</a>
-
-📢 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ: <a href=https://t.me/vj_botz>𝐕𝐉 𝐔𝐩𝐝𝐚𝐭𝐞</a></b>
-"""
+Use the help section for more detailed information."""
 
     CABOUT_TXT = """<b>ʜɪ ɪ ᴀᴍ ᴘᴇʀᴍᴀɴᴇɴᴛ ғɪʟᴇ sᴛᴏʀᴇ ʙᴏᴛ ᴡɪᴛʜ ᴄʟᴏɴᴇ ғᴇᴀᴛᴜʀᴇ + ᴄᴜsᴛᴏᴍ ᴜʀʟ sʜᴏʀᴛɴᴇʀ ɪᴛ ᴍᴇᴀɴs ᴀɴʏ ᴜsᴇʀ ᴄᴀɴ sᴇᴛ ʜɪs ᴜʀʟ sʜᴏʀᴛɴᴇʀ ᴀɴᴅ + ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ.
 
@@ -89,23 +83,15 @@ First Send /clone command then follow below steps.
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-    HELP_TXT = """<b>💢 Hᴏᴡ Tᴏ Usᴇ Tʜɪs Bᴏᴛ ☺️
+    HELP_TXT = """Just send media to the bot, and it will automatically save and generate a link for a single file only.
 
-🔻 /link - ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴠɪᴅᴇᴏ ᴏʀ ғɪʟᴇ ᴛᴏ ɢᴇᴛ sʜᴀʀᴀʙʟᴇ ʟɪɴᴋ
+Before storing files, you need to set the required details in the settings. Once you open the settings, please complete the configuration without leaving.
 
-🔻 /batch - sᴇɴᴅ ғɪʀsᴛ ʟɪɴᴋ ᴏғ ғɪʟᴇ sᴛᴏʀᴇ ᴄʜᴀɴɴᴇʟ ᴘᴏsᴛ ᴛʜᴇɴ ʟᴀsᴛ ᴘᴏsᴛ ʟɪɴᴋ ᴀɴᴅ ᴍᴀᴋᴇ sᴜʀᴇ ʙᴏᴛ ɪs ᴀᴅᴍɪɴ ɪɴ ʏᴏᴜʀ ғɪʟᴇ sᴛᴏʀᴇ ᴄʜᴀɴɴᴇʟ.
-ᴇx - /batch https://t.me/vj_botz/25 https://t.me/vj_botz/30
+Detailed information about all settings is available within the settings menu itself, so you can find help there.
 
-🔻 /base_site - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ sᴇᴛ ᴜʀʟ sʜᴏʀᴛɴᴇʀ ʟɪɴᴋ ᴅᴏᴍᴀɪɴ 
-ᴇx - /base_site ʏᴏᴜʀᴅᴏᴍᴀɪɴ.ᴄᴏᴍ
+Batching multiple files is currently not supported. This feature may be introduced in the future, or it may not.
 
-🔻 /api - sᴇᴛ ʏᴏᴜʀ ᴜʀʟ sʜᴏʀᴛɴᴇʀ ᴀᴄᴄᴏᴜɴᴛ ᴀᴘɪ 
-ᴇx - /api ʙᴀᴏᴡɢᴡᴋʟᴀᴀʙᴀᴋʟ
-
-🔻 /deletecloned - ᴜsᴇ ᴛʜɪs ғᴏʀ ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ ᴄʟᴏɴᴇ ʙᴏᴛ 
-ᴇx - /deletecloned ʏᴏᴜʀʙᴏᴛᴛᴏᴋᴇɴ
-
-🔻 /broadcast - ʀᴇᴘʟʏ ᴛᴏ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ʙʀᴏᴀᴅᴄᴀsᴛ (ʙᴏᴛ ᴏᴡɴᴇʀ ᴏɴʟʏ)</b>"""
+Use /my_files_link to generate a link that shows all your files to users. Users can also find files by searching."""
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -145,3 +131,43 @@ Nᴀᴍᴇ - {}</b>
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
+SET_TXT = """Please select the text you want to change."""
+
+LANG_TXT = """Please select the language for the bot. Which one do you prefer?
+
+Note: All languages, except English, are translated using Google Translate."""
+
+SHORT_TXT = """If you want to earn from a shortener ad site (where users see an ad page before accessing a file), select '✔'. Otherwise, select '❌'.
+
+What is a shortener ad site?  
+This type of site shortens any kind of link and redirects users to an ad page first. Users must view the ad page and wait for a specified time (10, 20, or 30 seconds, depending on the site) before being directed to the original link.
+
+The CPM (Cost Per Mille) for these ad pages varies. For example, a CPM of 1 means the site pays $1 for 1,000 views. To count as one view, users must watch all ad pages and access the original link.
+
+The minimum CPM is typically 1 (1.5-3 CPM) for one page, while the maximum CPM can reach 9-10 for four pages. Payment is usually made in dollars, but the exchange rate may differ. For instance, if the dollar rate is ₹83, they might pay ₹80 or less."""
+
+SHORT_F_TXT = """You selected '❌'. This means users can directly access your files without viewing any ad pages."""
+
+SHORT_T_TXT = """Please select the type of shortener you need.
+
+- Verify: Users need to verify once to access unlimited movies, based on your settings. Verification settings include options like:
+  - Verify once daily.
+  - Verify every 24, 12, 6, or 3 hours.
+  - Limit access to a certain number of files (e.g., 3, 5, 8, 10) before requiring verification again.
+  A verification link will be generated and shortened using your API ID.
+
+- Link Shortener: After storing your files, a shortened link for each file will be generated using your API ID and sent."""
+
+L_SHORT_TXT = """All stored file links will now be shortened using your API ID."""
+
+VERIFY_T = """Please select the type of verification you need.
+
+- Daily: Users need to verify once per day (from 12:00 AM to 11:59 PM) to access unlimited files.
+- Per Hour: Users need to verify every set number of hours. For example, if set to 6 hours, verification at 8:00 AM grants access until 2:00 PM. Afterward, they must verify again.
+- Per File: Users need to verify for every set number of files. For example, if set to 5 files, users can access 5 files after verification. Beyond that, they must verify again."""
+
+D_VERIFY_TXT = """Users will now be required to verify once daily."""
+
+H_VERIFY_TXT = """Select the time interval for verification (as explained before)."""
+
+F_VERIFY_TXT = """Select the file limit per verification (as explained before)."""
