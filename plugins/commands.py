@@ -14,7 +14,7 @@ from plugins.users_api import get_user, update_user_info
 from plugins.database import get_file_details
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
-from utils import verify_user, check_token, check_verification, get_token
+from utils import verify_user, check_token, check_verification, get_token, translate_text 
 from config import *
 import re
 import json
@@ -91,10 +91,12 @@ async def start(client, message):
         if CLONE_MODE == True:
             buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
-        me2 = (await client.get_me()).mention
+        user_id = query.from_user.id 
+        txt = script.SET_TXT
+        ttxt = await translate_text(txt, user_id)    
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TXT.format(message.from_user.mention, me2),
+            caption=ttxt,
             reply_markup=reply_markup
         )
         return
