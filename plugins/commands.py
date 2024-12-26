@@ -116,7 +116,7 @@ async def start(client, message):
         ttxt = await translate_text(txt, user_id)    
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=f'ttxt',
+            caption=f'{ttxt}',
             reply_markup=reply_markup
         )
         return
@@ -453,7 +453,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -474,7 +474,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.START_TXT.format(query.from_user.id)
         ttxt = await translate_text(txt, user_id) 
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -495,7 +495,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )  
