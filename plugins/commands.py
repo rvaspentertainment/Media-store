@@ -25,14 +25,14 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
-from googletrans import translator
+from googletrans import Translator
 
 async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to English if not set
     if dest_lang == 'en':  # Skip translation if already English
         return txt
     try:
-        translated = translator.translate(txt, dest=dest_lang)
+        translated = Translator.translate(txt, dest=dest_lang)
         return translated.text
     except Exception as e:
         return f"Error: {str(e)}"
