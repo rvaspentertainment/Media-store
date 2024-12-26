@@ -32,6 +32,10 @@ async def tr(client, message):
         txt = script.START_TXT 
         ttxt = await translate_text(txt, user_id)    
         await message.reply_txt(f'ttxt'),
+    except Exception as e:
+        await message.reply_txt(f"â˜£something went wrong\n\n{e}")
+            
+    
 
 
 
