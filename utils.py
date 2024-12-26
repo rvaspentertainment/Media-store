@@ -2,7 +2,7 @@ import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, 
 from datetime import date, datetime
 from config import SHORTLINK_API, SHORTLINK_URL
 from shortzy import Shortzy
-from googletrans import Translator
+from googletrans import translator
 
 
 logger = logging.getLogger(__name__)
