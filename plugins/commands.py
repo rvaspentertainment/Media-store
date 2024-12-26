@@ -27,12 +27,15 @@ BATCH_FILES = {}
 
 from googletrans import Translator
 
+# Initialize the Translator instance
+translator = Translator()
+
 async def translate_text(txt, user_id): 
-    dest_lang = 'kn'  # Default to English if not set
+    dest_lang = 'kn'  # Default to Kannada
     if dest_lang == 'en':  # Skip translation if already English
         return txt
     try:
-        translated = Translator.translate(txt, dest=dest_lang)
+        translated = translator.translate(text=txt, dest=dest_lang)
         return translated.text
     except Exception as e:
         return f"Error: {str(e)}"
@@ -46,8 +49,6 @@ async def tr(client, message):
         await message.reply_text(f"{ttxt}")  # Reply with the translated text
     except Exception as e:
         await message.reply_text(f"⚠️ Something went wrong\n\n{e}")
-    
-
 
 
 def get_size(size):
