@@ -14,7 +14,7 @@ from plugins.users_api import get_user, update_user_info
 from plugins.database import get_file_details
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
-from utils import verify_user, check_token, check_verification, get_token, translate_text 
+from utils import verify_user, check_token, check_verification, get_token 
 from config import *
 import re
 import json
@@ -25,9 +25,15 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+async def translate_text(txt, user_id): 
+    dest_lang = 'kn'  # Default to English if not set
+    if dest_lang == 'en':  # Skip translation if already English
+        return txt
+    try:
+        translated = translator.translate(txt, dest=dest_lang)
+        return translated.text
+    except Exception as e:
+        await message.reply_text(f"Error: {str(e)}")
 
 
 def get_size(size):
