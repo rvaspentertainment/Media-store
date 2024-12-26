@@ -2,7 +2,6 @@ import logging, asyncio, os, re, random, pytz, aiohttp, requests, string, json, 
 from datetime import date, datetime
 from config import SHORTLINK_API, SHORTLINK_URL
 from shortzy import Shortzy
-from googletrans import translator
 
 
 logger = logging.getLogger(__name__)
@@ -10,15 +9,7 @@ logger.setLevel(logging.INFO)
 TOKENS = {}
 VERIFIED = {}
 
-async def translate_text(txt, user_id): 
-    dest_lang = 'kn'  # Default to English if not set
-    if dest_lang == 'en':  # Skip translation if already English
-        return txt
-    try:
-        translated = translator.translate(txt, dest=dest_lang)
-        return translated.text
-    except Exception as e:
-        return f"Error: {str(e)}"
+
         
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
