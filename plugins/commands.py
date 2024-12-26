@@ -25,16 +25,16 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
+
 @Client.on_message(filters.command("tr") & filters.incoming)
 async def tr(client, message):
     try:
-        user_id = query.from_user.id 
-        txt = script.START_TXT 
-        ttxt = await translate_text(txt, user_id)    
-        await message.reply_txt(f'ttxt'),
+        user_id = message.from_user.id  # Get user ID
+        txt = script.START_TXT  # Assuming START_TXT is defined in the script
+        ttxt = await translate_text(txt, user_id)  # Translate the text
+        await message.reply_text(f"{ttxt}")  # Reply with the translated text
     except Exception as e:
-        await message.reply_txt(f"â˜£something went wrong\n\n{e}")
-            
+        await message.reply_text(f"⚠️ Something went wrong\n\n{e}")
     
 
 
@@ -100,7 +100,7 @@ async def start(client, message):
         if CLONE_MODE == True:
             buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
-        user_id = query.from_user.id 
+        user_id = message.from_user.id 
         txt = script.START_TXT 
         ttxt = await translate_text(txt, user_id)    
         await message.reply_photo(
