@@ -14,7 +14,7 @@ from plugins.users_api import get_user, update_user_info
 from plugins.database import get_file_details
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
-from utils import verify_user, check_token, check_verification, get_token 
+from utils import verify_user, check_token, check_verification, get_token, translate_text 
 from config import *
 import re
 import json
@@ -25,15 +25,6 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
-async def translate_text(txt, user_id): 
-    dest_lang = 'kn'  # Default to English if not set
-    if dest_lang == 'en':  # Skip translation if already English
-        return txt
-    try:
-        translated = translator.translate(txt, dest=dest_lang)
-        return translated.text
-    except Exception as e:
-        await message.reply_text(f"Error: {str(e)}")
 
 
 def get_size(size):
@@ -98,7 +89,7 @@ async def start(client, message):
             buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         user_id = query.from_user.id 
-        txt = script.SET_TXT
+        txt = script.START_TXT 
         ttxt = await translate_text(txt, user_id)    
         await message.reply_photo(
             photo=random.choice(PICS),
