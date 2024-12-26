@@ -18,8 +18,8 @@ async def translate_text(txt, user_id):
         translated = translator.translate(txt, dest=dest_lang)
         return translated.text
     except Exception as e:
-        await message.reply_text(f"Error: {str(e)}")
-
+        return f"Error: {str(e)}"
+        
 async def get_verify_shorted_link(link):
     if SHORTLINK_URL == "api.shareus.io":
         url = f'https://{SHORTLINK_URL}/easy_api'
