@@ -25,6 +25,14 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
+@Client.on_message(filters.command("tr") & filters.incoming)
+async def tr(client, message):
+    try:
+        user_id = query.from_user.id 
+        txt = script.START_TXT 
+        ttxt = await translate_text(txt, user_id)    
+        await message.reply_txt(f'ttxt'),
+
 
 
 def get_size(size):
@@ -93,7 +101,7 @@ async def start(client, message):
         ttxt = await translate_text(txt, user_id)    
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=ttxt,
+            caption=f'ttxt',
             reply_markup=reply_markup
         )
         return
