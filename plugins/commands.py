@@ -572,7 +572,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )  
@@ -604,7 +604,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )     
@@ -636,7 +636,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ttxt = await translate_text(txt, user_id)    
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )       
@@ -659,7 +659,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.SHORT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -681,7 +681,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.SHORT_F_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )            
@@ -712,7 +712,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.SHORT_T_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -733,7 +733,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.L_SHORT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                
@@ -758,7 +758,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.VERIFY_T__TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -779,7 +779,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.D_VERIFY_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -804,7 +804,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.H_VERIFY_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                
@@ -824,7 +824,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -845,7 +845,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -866,7 +866,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -887,7 +887,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                
@@ -912,7 +912,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -934,7 +934,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )           
@@ -955,7 +955,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -976,7 +976,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -997,7 +997,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                             
@@ -1019,7 +1019,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )                      
@@ -1040,7 +1040,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )        
@@ -1061,7 +1061,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.ABOUT_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )    
@@ -1084,7 +1084,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         txt = script.VLC_TXT
         ttxt = await translate_text(txt, user_id)    
         await query.message.edit_text(
-            text=ttxt,
+            text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
@@ -1108,7 +1108,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             txt = script.VLC_TXT
             ttxt = await translate_text(txt, user_id)    
             await query.message.edit_text(
-                 text=ttxt,
+                 text=f'{ttxt}',
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )                   
