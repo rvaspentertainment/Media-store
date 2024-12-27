@@ -429,77 +429,94 @@ async def base_site_handler(client, m: Message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
-    if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
+    if not BOT_RUN and query.from_user.id not in ADMINS:  
         await query.answer(
             text='Bot is under maintenance.',
-            show_alert=True  # Show as an alert instead of a toast
+            show_alert=True
         )
         return
+    
     if query.data == "close_data":
         await query.message.delete()
+
+    elif query.data.startswith("engtxt_"):
+        engtxt = query.data.split("_", 1)[1]
+        await query.message.edit_text(
+            text=f'{engtxt}',
+            parse_mode=enums.ParseMode.HTML
+        )
+
     elif query.data == "about":
         buttons = [[
+            InlineKeyboardButton('English', callback_data=f'engtxt_{script.ABOUT_TXT}')
+        ], [
             InlineKeyboardButton('◀️', callback_data='start'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
+            chat_id=query.message.chat.id, 
+            message_id=query.message.id, 
+            media=InputMediaPhoto(random.choice(PICS))
         )
         reply_markup = InlineKeyboardMarkup(buttons)
-        user_id = query.from_user.id 
+        user_id = query.from_user.id
         txt = script.ABOUT_TXT
-        ttxt = await translate_text(txt, user_id)    
+        ttxt = await translate_text(txt, user_id)
         await query.message.edit_text(
             text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-    
+
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
-            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about'),
-            InlineKeyboardButton('âš™ Bot settings', callback_data='settings')
+            InlineKeyboardButton('English', callback_data=f'engtxt_{script.START_TXT}')
+        ], [
+            InlineKeyboardButton('🙋‍♀️ Help', callback_data='help'),
+            InlineKeyboardButton('😊 About', callback_data='about'),
+            InlineKeyboardButton('⚙️ Bot settings', callback_data='settings')
         ]]
-        
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
+            chat_id=query.message.chat.id, 
+            message_id=query.message.id, 
+            media=InputMediaPhoto(random.choice(PICS))
         )
         txt = script.START_TXT.format(query.from_user.id)
-        ttxt = await translate_text(txt, user_id) 
+        ttxt = await translate_text(txt, query.from_user.id)
         await query.message.edit_text(
             text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-    
+
     elif query.data == "help":
         buttons = [[
+            InlineKeyboardButton('English', callback_data=f'engtxt_{script.HELP_TXT}')
+        ], [
             InlineKeyboardButton('◀️', callback_data='start'),
-            InlineKeyboardButton('Settings', callback_data='settings'),
+            InlineKeyboardButton('⚙️ Settings', callback_data='settings'),
             InlineKeyboardButton('❌', callback_data='close_data')
         ]]
         await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
+            chat_id=query.message.chat.id, 
+            message_id=query.message.id, 
+            media=InputMediaPhoto(random.choice(PICS))
         )
-        user_id = query.from_user.id 
+        user_id = query.from_user.id
         txt = script.HELP_TXT
-        ttxt = await translate_text(txt, user_id)    
+        ttxt = await translate_text(txt, user_id)
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
             text=f'{ttxt}',
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-        )  
+        )
+
+    
         
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
