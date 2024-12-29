@@ -19,12 +19,16 @@ from config import *
 import re
 import json
 import base64
+from telegraph import upload_file
 from urllib.parse import quote_plus
 from TechVJ.utils.file_properties import get_name, get_hash, get_media_file_size
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
-
+QUALITY_KEYWORDS = [
+    "240p", "360p", "480p", "720p", "1080p", "2160p", 
+    "1440p", "576p", "4k", "hevc", "x265", "×265"
+]
 from googletrans import Translator
 
 # Initialize the Translator instance
@@ -1128,5 +1132,107 @@ async def cb_handler(client: Client, query: CallbackQuery):
                  text=f'{ttxt}',
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
-            )                   
+            )                
+
+
+    elif not BOT_RUN and message.from_user.id not in ADMINS:
+        return await message.reply(
+            "The bot is still under development. It will be officially released in January or February 2025.\n\n"
+            "Currently, this is made public only for introduction purposes, but it is not yet ready for use."
+        )
+
+    try:
+        # User ID
+        msuid = message.from_user.id
+        
+        # Ask for poster
+        poster_msg = await bot.ask(message.chat.id, "**Please, send the poster of the media**")
+        if not poster_msg.photo:
+            return await bot.send_message(message.chat.id, "Please send a valid poster (photo).")
+        poster = await poster_msg.download()
+        response = upload_file(poster)
+        media_poster_url = f"https://graph.org{response[0]}"
+
+        # Ask for media name
+        name_msg = await bot.ask(
+            message.chat.id, 
+            "**Please, send the name of the media.**"
+        )
+        media_name = name_msg.text.strip()
+
+        # Ask for year
+        year_msg = await bot.ask(message.chat.id, "**Please, send the release year of the media**")
+        if not year_msg.text.isdigit():
+            return await bot.send_message(message.chat.id, "Invalid year. Please send a valid numeric year.")
+        release_year = int(year_msg.text)
+
+        # Ask for language
+        language_msg = await bot.ask(
+            message.chat.id, 
+            "**Please, send the language of the media.**\n"
+            "For multiple languages, separate them with dashes (e.g., Kannada-English-Telugu)."
+        )
+        media_language = language_msg.text.strip()
+
+        # Collect media files
+        media_files = []
+        while True:
+            media_msg = await bot.ask(
+                message.chat.id, 
+                "**Please, send the media file (or type 'Done' to finish).**"
+            )
+            if media_msg.text and media_msg.text.lower() == "done":
+                break
+
+            if media_msg.document or media_msg.video:
+                media = media_msg.document or media_msg.video
+                
+                # Get file details
+                file_name = media.file_name if media.file_name else "Unknown"
+                file_size = round(media.file_size / (1024 * 1024), 2)  # Convert to MB
+                file_quality = next((q for q in QUALITY_KEYWORDS if re.search(q, file_name, re.IGNORECASE)), "None")
+
+                await bot.send_document(
+                    -1002400439772, 
+                    document=media.file_id, 
+                    caption=(
+                        f"**User ID:** {msuid}\n"
+                        f"**Media Name:** {media_name}\n"
+                        f"**Year:** {release_year}\n"
+                        f"**Language:** {media_language}\n"
+                        f"**File Name:** {file_name}\n"
+                        f"**File Size:** {file_size} MB\n"
+                        f"**Quality:** {file_quality}"
+                    )
+                )
+                media_files.append({
+                    "file_id": media.file_id,
+                    "file_name": file_name,
+                    "file_size_mb": file_size,
+                    "quality": file_quality,
+                })
+            else:
+                await bot.send_message(message.chat.id, "Please send a valid document or video.")
+
+        # Save to database
+        media_data = {
+            "name": media_name,
+            "poster_url": media_poster_url,
+            "year": release_year,
+            "language": media_language,
+            "files": media_files,
+        }
+
+        await db.user_data.files.update_one(
+            {"name": media_name, "year": release_year},
+            {"$set": media_data},
+            upsert=True
+        )
+
+        await bot.send_message(message.chat.id, "Media details saved successfully!")
+
+    except Exception as e:
+        error_message = f"An error occurred while saving media details: {str(e)}"
+        await bot.send_message(-1002443600521, error_message)  # Log to admin group
+        await bot.send_message(message.chat.id, "An unexpected error occurred. Please try again.")
 
