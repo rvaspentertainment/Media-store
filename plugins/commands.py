@@ -1180,7 +1180,7 @@ async def get_poster(client, chat_id):
     if not poster_msg.photo:
         return await client.send_message(chat_id, "Please send a valid poster (photo).")
     poster = await poster_msg.download()
-    image_url = await upload_image_requests(poster)
+    image_url = upload_image_requests(poster)
     media_poster_url = f"{image_url}"    
     return media_poster_url
 
