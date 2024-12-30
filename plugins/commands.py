@@ -1177,12 +1177,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
 async def get_poster(client, chat_id):
     poster_msg = await bot.ask(message.chat.id, "**Please, send the poster of the media**")
-        if not poster_msg.photo:
-            return await bot.send_message(message.chat.id, "Please send a valid poster (photo).")
-        poster = await poster_msg.download()
-        image_url = await upload_image_requests(poster)
-        media_poster_url = f"{image_url}"    
-        return media_poster_url
+    if not poster_msg.photo:
+        return await bot.send_message(message.chat.id, "Please send a valid poster (photo).")
+    poster = await poster_msg.download()
+    image_url = await upload_image_requests(poster)
+    media_poster_url = f"{image_url}"    
+    return media_poster_url
 
 def upload_image_requests(image_path):
     upload_url = "https://envs.sh"
