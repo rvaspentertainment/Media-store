@@ -1176,14 +1176,31 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    poster_msg = await client.ask(chat_id, "Send the poster of the media (photo).")
-    if not poster_msg.photo:
-        await client.send_message(chat_id, "Invalid poster. Please send a valid photo.")
-        return None
-    poster_path = await poster_msg.download()
-    response = upload_file(poster_path)
-    return f"https://graph.org{response[0]}"
+    poster_msg = await bot.ask(message.chat.id, "**Please, send the poster of the media**")
+        if not poster_msg.photo:
+            return await bot.send_message(message.chat.id, "Please send a valid poster (photo).")
+        poster = await poster_msg.download()
+        image_url = await upload_image_requests(poster)
+        media_poster_url = f"{image_url}"    
+        return media_poster_url
 
+def upload_image_requests(image_path):
+    upload_url = "https://envs.sh"
+
+    try:
+        with open(image_path, 'rb') as file:
+            files = {'file': file} 
+            response = requests.post(upload_url, files=files)
+
+            if response.status_code == 200:
+                return response.text.strip() 
+            else:
+                return print(f"Upload failed with status code {response.status_code}")
+
+    except Exception as e:
+        print(f"Error during upload: {e}")
+        return None
+        
 async def get_text(client, chat_id, prompt):
     text_msg = await client.ask(chat_id, prompt)
     return text_msg.text.strip()
