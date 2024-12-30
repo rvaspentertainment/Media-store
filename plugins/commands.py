@@ -34,6 +34,30 @@ from googletrans import Translator
 # Initialize the Translator instance
 translator = Translator()
 
+@Client.on_message(filters.command("sd") & filters.private)
+async def check_saved_details(client, message):
+    # Get the user ID
+    user_id = message.from_user.id
+
+    # Query the database for media details saved by this user
+    media_details = await db.user_data.files.find({"user_id": user_id}).to_list(length=100)
+
+    if not media_details:
+        await message.reply("No media details found for you.")
+        return
+
+    # Format the response
+    response = "Here are your saved media details:\n\n"
+    for media in media_details:
+        response += f"**Name:** {media.get('name', 'N/A')}\n"
+        response += f"**Year:** {media.get('year', 'N/A')}\n"
+        response += f"**Language:** {media.get('language', 'N/A')}\n"
+        response += f"**Poster URL:** {media.get('poster_url', 'N/A')}\n"
+        response += f"**Files:** {', '.join(media.get('files', []))}\n\n"
+
+    # Send the response
+    await message.reply(response, disable_web_page_preview=True)
+    
 async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to Kannada
     if dest_lang == 'en':  # Skip translation if already English
