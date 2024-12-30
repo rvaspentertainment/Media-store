@@ -1176,9 +1176,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    poster_msg = await client.ask(message.chat.id, "**Please, send the poster of the media**")
+    poster_msg = await client.ask(chat_id, "**Please, send the poster of the media**")
     if not poster_msg.photo:
-        return await client.send_message(message.chat.id, "Please send a valid poster (photo).")
+        return await client.send_message(chat_id, "Please send a valid poster (photo).")
     poster = await poster_msg.download()
     image_url = await upload_image_requests(poster)
     media_poster_url = f"{image_url}"    
