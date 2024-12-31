@@ -1165,11 +1165,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
             
             
-            udb = await db.user_data.find_one({"id": message.from_user.id})
+            udb = await db.user_data.find_one({"id": query.from_user.id})
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
-            movies_no = f"{message.from_user.id}-{new_movie_no}"
-            media_files = await collect_media_files(client, query.message.chat.id)
+            movies_no = f"{query.from_user.id}-{new_movie_no}"
+            media_files = await collect_media_files(client,query.from_user.id)
             media_data = {
                 "movies_no": movies_no,
                 "name": media_name,
