@@ -18,6 +18,8 @@ from utils import verify_user, check_token, check_verification, get_token
 from config import *
 import re
 import json
+import datetime 
+import pytz 
 import base64
 from telegraph import upload_file
 from urllib.parse import quote_plus
@@ -33,6 +35,17 @@ from googletrans import Translator
 
 # Initialize the Translator instance
 translator = Translator()
+
+async def dati():
+    try:
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+        kolkata_time = datetime.datetime.now(kolkata_timezone)
+        formatted_time = kolkata_time.strftime('%d/%m/%Y %H:%M:%S')  
+        return formatted_time 
+    except Exception as e:
+        # Handle exceptions appropriately, e.g., logging or raising
+        raise RuntimeError(f"Error in dati function: {str(e)}")
+
 
 @Client.on_message(filters.command("dbud") & filters.incoming)
 async def dbud(client, message):
