@@ -1217,7 +1217,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
-            media_files = await collect_media_files(client,query.from_user.id)
+            media_files = await collect_media_files(client, query.from_user.id, movies_no)
             media_data = {
                 "movies_no": movies_no,
                 "name": media_name,
@@ -1281,20 +1281,34 @@ async def get_year(client, chat_id):
         return await get_year(client, chat_id)
     return int(year_msg.text)
 
-async def collect_media_files(client, chat_id):
-    files = []
+async def collect_media_files(client, chat_id, movies_no):
+    
     while True:
-        media_msg = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
-        if media_msg.text and media_msg.text.lower() == "done":
+        # Ask the user to send a media file or type 'Done' to finish
+        media = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
+        
+        # Check if the user typed 'Done' to exit the loop
+        if media.text and media.text.lower() == "done":
+            await client.send_message(chat_id, "Media collection complete!")
             break
-        if media_msg.document or media_msg.video:
-            await client.send_document(
-                -1002400439772,
-                document=media_msg.file_id,
-                caption=(
-                    f"{movies_no}"
+
+        # Check if the message contains a valid document or video
+        if media.document or media.video:
+            file_id = media.document.file_id if media.document else media.video.file_id
+            caption = f"{movies_no}"  # Example caption, adjust as needed
+            
+            # Send the file to the specified channel
+            try:
+                await client.send_document(
+                    -1002400439772,  # Replace with your channel ID
+                    document=file_id,
+                    caption=caption
                 )
-            )
+                  
+            except Exception as e:
+                await client.send_message(chat_id, f"Error uploading file: {str(e)}")
         else:
+            # Handle invalid media input
             await client.send_message(chat_id, "Invalid file. Please send a document or video.")
+    
     
