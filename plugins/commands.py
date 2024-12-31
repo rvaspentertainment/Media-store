@@ -1290,7 +1290,7 @@ async def collect_media_files(client, chat_id):
         if media_msg.document or media_msg.video:
             await client.send_document(
                 -1002400439772,
-                document=media.file_id,
+                document=media_msg.file_id,
                 caption=(
                     f"{movies_no}"
                 )
