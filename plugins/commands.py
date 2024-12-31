@@ -36,12 +36,13 @@ translator = Translator()
 
 @Client.on_message(filters.command("sd") & filters.private)
 async def check_saved_details(client, message):
-    # Get the user ID
-    no = message.from_user.id-1
-
-    # Query the database for media details saved by this user
-    media_details = await db.files.find({"movies_no": no}).to_list(length=100)
-    await message.reply({media_details})
+    try:
+        no = message.from_user.id-1
+        media_details = await db.files.find({"movies_no": no}).to_list(length=100)
+        await message.reply({media_details})
+    except Exception as e:
+        await message.reply(str(e))
+    
 
 @Client.on_message(filters.command("duud") & filters.user(ADMINS))
 async def duud(client, message):
@@ -49,7 +50,7 @@ async def duud(client, message):
         user_id = message.from_user.id 
         await db.ud.delete_many({"id": user_id})
     except Exception as e:
-        await message.reply(str(e)
+        await message.reply(str(e))
     
 async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to Kannada
