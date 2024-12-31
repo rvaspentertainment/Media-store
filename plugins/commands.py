@@ -41,10 +41,15 @@ async def check_saved_details(client, message):
 
     # Query the database for media details saved by this user
     media_details = await db.files.find({"movies_no": no}).to_list(length=100)
-
-
-    
     await message.reply({media_details})
+
+@Client.on_message(filters.command("duud") & filters.user(ADMINS))
+async def duud(client, message):
+    try:
+        user_id = message.from_user.id 
+        await db.ud.delete_many({"id": user_id})
+    except Exception as e:
+        await message.reply(str(e)
     
 async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to Kannada
@@ -96,7 +101,7 @@ async def start(client, message):
         user_data = {
             "id": message.from_user.id,
             "bot_lang": 'en',
-            "file_stored": 0,
+            "movie_no": 0,
             "files_taken": 0,
             "premium-users": [],
             "shortner-type": None,
