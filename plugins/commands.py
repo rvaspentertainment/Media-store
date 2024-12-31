@@ -1179,8 +1179,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
             # Get media files
             media_files = await collect_media_files(client, query.message.chat.id, user_id, media_name, release_year, media_language)
 
-            # Save to database
+
+
+
             media_data = {
+                "movie_no": movie_no,
                 "name": media_name,
                 "poster_url": poster,
                 "year": release_year,
@@ -1188,7 +1191,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "files": media_files,
             }
             await db.user_data.files.update_one(
-                {"name": media_name, "year": release_year},
+                {"movie_no": movie_no},
                 {"$set": media_data},
                 upsert=True
             )
