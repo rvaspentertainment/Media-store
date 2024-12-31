@@ -48,7 +48,7 @@ async def check_saved_details(client, message):
 async def duud(client, message):
     try:
         user_id = message.from_user.id 
-        await db.ud.delete_many({"id": user_id})
+        await db.user_details.delete_many({"id": user_id})
     except Exception as e:
         await message.reply(str(e))
     
