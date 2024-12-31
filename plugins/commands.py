@@ -1176,27 +1176,34 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "Send the language(s) of the media (e.g., Kannada-English-Telugu)."
             )
 
-            # Get media files
-            media_files = await collect_media_files(client, query.message.chat.id, user_id, media_name, release_year, media_language)
-
-
-
-
+            
+            
+            udb = await db.user_data.find_one({"id": message.from_user.id})
+            current_movie_no = udb["movie_no"]
+            new_movie_no = current_movie_no + 1
+            movies_no = f"{message.from_user.id}-{new_movie_no}"
+            media_files = await collect_media_files(client, query.message.chat.id)
             media_data = {
-                "movie_no": movie_no,
+                "movies_no": movies_no,
                 "name": media_name,
                 "poster_url": poster,
                 "year": release_year,
-                "language": media_language,
-                "files": media_files,
+                "language": media_language
             }
-            await db.user_data.files.update_one(
-                {"movie_no": movie_no},
+            await db.update.user_data(
+                {"id": message.from_user.id},
+                {"$set": {"movie_no": new_movie_no}},
+                upsert=True
+            )
+            await db.files.update_one(
+                {"movies_no": movie_no},
                 {"$set": media_data},
                 upsert=True
             )
-            await client.send_message(query.message.chat.id, "Media details saved successfully!")
+
         
+            
+
         except Exception as e:
             error_message = f"Error: {e}\nUser: {query.from_user.id}\nData: {query.data}"
             await client.send_message(-1002443600521, error_message)
@@ -1239,32 +1246,20 @@ async def get_year(client, chat_id):
         return await get_year(client, chat_id)
     return int(year_msg.text)
 
-async def collect_media_files(client, chat_id, user_id, media_name, release_year, media_language):
+async def collect_media_files(client, chat_id):
     files = []
     while True:
         media_msg = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
         if media_msg.text and media_msg.text.lower() == "done":
             break
         if media_msg.document or media_msg.video:
-            media = media_msg.document or media_msg.video
-            file_name = media.file_name or "Unknown"
-            file_size = round(media.file_size / (1024 * 1024), 2)  # MB
-            file_quality = next((q for q in QUALITY_KEYWORDS if re.search(q, file_name, re.IGNORECASE)), "None")
             await client.send_document(
                 -1002400439772,
                 document=media.file_id,
                 caption=(
-                    f"User ID: {user_id}\nMedia Name: {media_name}\nYear: {release_year}\n"
-                    f"Language: {media_language}\nFile Name: {file_name}\n"
-                    f"File Size: {file_size} MB\nQuality: {file_quality}"
+                    f"{movies_no}"
                 )
             )
-            files.append({
-                "file_id": media.file_id,
-                "file_name": file_name,
-                "file_size_mb": file_size,
-                "quality": file_quality,
-            })
         else:
             await client.send_message(chat_id, "Invalid file. Please send a document or video.")
-    return files
+    
