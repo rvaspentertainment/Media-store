@@ -37,26 +37,14 @@ translator = Translator()
 @Client.on_message(filters.command("sd") & filters.private)
 async def check_saved_details(client, message):
     # Get the user ID
-    user_id = message.from_user.id
+    no = message.from_user.id-1
 
     # Query the database for media details saved by this user
-    media_details = await db.user_data.files.find({"user_id": user_id}).to_list(length=100)
+    media_details = await db.files.find({"movies_no": no}).to_list(length=100)
 
-    if not media_details:
-        await message.reply("No media details found for you.")
-        return
 
-    # Format the response
-    response = "Here are your saved media details:\n\n"
-    for media in media_details:
-        response += f"**Name:** {media.get('name', 'N/A')}\n"
-        response += f"**Year:** {media.get('year', 'N/A')}\n"
-        response += f"**Language:** {media.get('language', 'N/A')}\n"
-        response += f"**Poster URL:** {media.get('poster_url', 'N/A')}\n"
-        response += f"**Files:** {', '.join(media.get('files', []))}\n\n"
-
-    # Send the response
-    await message.reply(response, disable_web_page_preview=True)
+    
+    await message.reply({media_details})
     
 async def translate_text(txt, user_id): 
     dest_lang = 'kn'  # Default to Kannada
@@ -110,7 +98,6 @@ async def start(client, message):
             "bot_lang": 'en',
             "file_stored": 0,
             "files_taken": 0,
-            "files": [],
             "premium-users": [],
             "shortner-type": None,
             "verify-type": None,
@@ -1190,13 +1177,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "year": release_year,
                 "language": media_language
             }
-            await db.update.user_data(
-                {"id": message.from_user.id},
+            await db.user_data.update_one(
+                {"id": query.from_user.id},
                 {"$set": {"movie_no": new_movie_no}},
                 upsert=True
             )
             await db.files.update_one(
-                {"movies_no": movie_no},
+                {"movies_no": movies_no},
                 {"$set": media_data},
                 upsert=True
             )
