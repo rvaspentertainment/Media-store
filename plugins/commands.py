@@ -1334,6 +1334,3 @@ async def upload_image_requests(image_path, chat_id):
         if os.path.exists(image_path):
             os.remove(image_path)
 
-if os.path.getsize(image_path) > 5 * 1024 * 1024:  # 5 MB
-    await client.send_message(chat_id, "File size exceeds the 5MB limit. Please try a smaller file.")
-    return None
