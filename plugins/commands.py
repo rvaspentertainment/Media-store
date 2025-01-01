@@ -103,7 +103,7 @@ async def check_saved_details(client, message):
     try:
         # Convert the cursor to a list (limit to 100 documents to avoid large results)
         media_details = await db.user_data.find_one(
-            {"id": message.from_user.id, "files": {"$elemMatch": {"movies_no": "591732965-6"}}}
+            {"id": message.from_user.id, "files": {"$elemMatch": {"movies_no": "591732965-1"}}}
         )
         if media_details:
             # Reply with the details as a string
@@ -174,6 +174,7 @@ async def start(client, message):
             "bot_lang": 'en',
             "movie_no": 0,
             "files_taken": 0,
+            "files": [],
             "premium-users": [],
             "shortner-type": None,
             "verify-type": None,
