@@ -80,7 +80,7 @@ async def dbud(client, message):
 async def check_saved_details(client, message):
     try:
         # Use consistent logic for `movies_no`
-        movies_no = 591732965-1
+        movies_no = 591732965-3
         media_details = await db.files.find_one({"movies_no": movies_no})
         
         if media_details:
@@ -1249,13 +1249,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    poster_msg = await client.ask(chat_id, "**Please, send the poster of the media**")
-    if not poster_msg.photo:
-        return await client.send_message(chat_id, "Please send a valid poster (photo).")
-    poster = await poster_msg.download()
-    image_url = upload_image_requests(poster)
-    media_poster_url = f"{image_url}"    
-    return media_poster_url
+    t_msg = await bot.ask(chat_id = update.from_user.id, text = "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
+    if not t_msg.media:
+        return await update.reply_text("**Only Media Supported.**")
+    path = await t_msg.download()
+    
+    try:
+        image_url = upload_image_requests(path, chat_id)
+        if not image_url:
+            return 
+    except Exception as e:
+        await client.send_message(chat_id, f"Error uploading file: {str(e)}")
+        return image_url
+    
+        
 
 def upload_image_requests(image_path):
     upload_url = "https://envs.sh"
@@ -1315,4 +1322,20 @@ async def collect_movie_files(client, chat_id, movies_no):
             # Handle invalid media input
             await client.send_message(chat_id, "Invalid file. Please send a document or video.")
     
-    
+
+def upload_image_requests(image_path, chat_id):
+    upload_url = "https://envs.sh"
+
+    try:
+        with open(image_path, 'rb') as file:
+            files = {'file': file} 
+            response = requests.post(upload_url, files=files)
+
+            if response.status_code == 200:
+                return response.text.strip() 
+            else:
+                return print(f"Upload failed with status code {response.status_code}")
+
+    except Exception as e:
+        await client.send_message(chat_id, f"Error uploading file: {str(e)}")
+        return None
