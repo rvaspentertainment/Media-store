@@ -1323,7 +1323,7 @@ async def collect_movie_files(client, chat_id, movies_no):
             await client.send_message(chat_id, "Invalid file. Please send a document or video.")
     
 
-def upload_image_requests(image_path, chat_id):
+async def upload_image_requests(image_path, chat_id):
     upload_url = "https://envs.sh"
 
     try:
