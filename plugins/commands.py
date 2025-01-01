@@ -1228,7 +1228,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "name": movie_name,
                 "poster_url": poster,
                 "year": release_year,
-                "language": mmovie_language
+                "language": movie_language
             }
             await db.user_data.update_one(
                 {"id": query.from_user.id},
