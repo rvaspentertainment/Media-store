@@ -86,7 +86,7 @@ async def dbud(client, message):
 @Client.on_message(filters.command("sd1") & filters.private)
 async def check_saved_details1(client, message):
     try:
-        media_details = db.files.find()
+        media_details = db.user_data.find()
         response = ""
         async for document in media_details:
             response += str(document) + "\n"
@@ -1258,7 +1258,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 upsert=True
             )
             await db.files.update_one(
-                {"movies_no": movies_no},
+                {"id": movies_no},
                 {"$set": movie_data},
                 upsert=True
             )
