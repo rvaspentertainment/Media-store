@@ -36,6 +36,13 @@ from googletrans import Translator
 # Initialize the Translator instance
 translator = Translator()
 
+@Client.on_message(filters.command("restart") & filters.user(ADMINS))
+async def stop_button(bot, message):
+    msg = await bot.send_message(text="**🔄 𝙿𝚁𝙾𝙲𝙴𝚂𝚂𝙴𝚂 𝚂𝚃𝙾𝙿𝙴𝙳. 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙸𝙽𝙶...**", chat_id=message.chat.id)       
+    await asyncio.sleep(3)
+    await msg.edit("**✅️ 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙴𝙳. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙲𝙰𝙽 𝚄𝚂𝙴 𝙼𝙴**")
+    os.execl(sys.executable, sys.executable, *sys.argv)
+
 async def dati():
     try:
         kolkata_timezone = pytz.timezone('Asia/Kolkata')
@@ -1249,7 +1256,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    t_msg = await bot.ask(chat_id = update.from_user.id, text = "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
+    t_msg = await client.ask(chat_id = update.from_user.id, text = "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
     if not t_msg.media:
         return await update.reply_text("**Only Media Supported.**")
     path = await t_msg.download()
@@ -1264,22 +1271,7 @@ async def get_poster(client, chat_id):
     
         
 
-def upload_image_requests(image_path):
-    upload_url = "https://envs.sh"
 
-    try:
-        with open(image_path, 'rb') as file:
-            files = {'file': file} 
-            response = requests.post(upload_url, files=files)
-
-            if response.status_code == 200:
-                return response.text.strip() 
-            else:
-                return print(f"Upload failed with status code {response.status_code}")
-
-    except Exception as e:
-        print(f"Error during upload: {e}")
-        return None
         
 async def get_text(client, chat_id, prompt):
     text_msg = await client.ask(chat_id, prompt)
