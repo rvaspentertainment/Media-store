@@ -1204,9 +1204,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 return
 
             # Get media details
-            media_name = await get_text(client, query.message.chat.id, "Send the name of the media.")
+            movie_name = await get_text(client, query.message.chat.id, "Send the name of the media.")
             release_year = await get_year(client, query.message.chat.id)
-            media_language = await get_text(
+            movie_language = await get_text(
                 client, query.message.chat.id, 
                 "Send the language(s) of the media (e.g., Kannada-English-Telugu)."
             )
@@ -1217,13 +1217,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
-            media_files = await collect_media_files(client, query.from_user.id, movies_no)
-            media_data = {
+            movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
+            movie_data = {
                 "movies_no": movies_no,
-                "name": media_name,
+                "name": movie_name,
                 "poster_url": poster,
                 "year": release_year,
-                "language": media_language
+                "language": mmovie_language
             }
             await db.user_data.update_one(
                 {"id": query.from_user.id},
@@ -1232,11 +1232,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )
             await db.files.update_one(
                 {"movies_no": movies_no},
-                {"$set": media_data},
+                {"$set": movie_data},
                 upsert=True
             )
-
-        
+            await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
 
         except Exception as e:
@@ -1281,7 +1280,7 @@ async def get_year(client, chat_id):
         return await get_year(client, chat_id)
     return int(year_msg.text)
 
-async def collect_media_files(client, chat_id, movies_no):
+async def collect_movie_files(client, chat_id, movies_no):
     
     while True:
         # Ask the user to send a media file or type 'Done' to finish
