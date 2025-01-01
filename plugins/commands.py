@@ -88,7 +88,7 @@ async def check_saved_details(client, message):
     try:
         # Use consistent logic for `movies_no`
         movies_no = 591732965-3
-        media_details = await db.files.find_one({"movies_no": movies_no})
+        media_details = await db.files.find()
         
         if media_details:
             await message.reply(str(media_details))
