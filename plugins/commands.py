@@ -80,7 +80,7 @@ async def dbud(client, message):
 async def check_saved_details(client, message):
     try:
         no = message.from_user.id-1
-        media_details = await db.files.find({"movies_no": no}).to_list(length=100)
+        media_details = await db.files.find_one({"movies_no": no})
         await message.reply({media_details})
     except Exception as e:
         await message.reply(str(e))
