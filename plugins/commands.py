@@ -1256,9 +1256,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    t_msg = await client.ask(chat_id = update.from_user.id, text = "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
-    if not t_msg.media:
-        return await update.reply_text("**Only Media Supported.**")
+    t_msg = await client.ask(chat_id, "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
+
     path = await t_msg.download()
     
     try:
