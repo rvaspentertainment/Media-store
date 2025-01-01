@@ -102,7 +102,7 @@ async def check_saved_details1(client, message):
 async def check_saved_details(client, message):
     try:
         # Convert the cursor to a list (limit to 100 documents to avoid large results)
-        media_details = await db.files.find().to_list(length=100)
+        media_details = await db.user_data.find_one({"id": 591732965+4})
         
         if media_details:
             # Reply with the details as a string
