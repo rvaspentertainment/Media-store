@@ -79,11 +79,16 @@ async def dbud(client, message):
 @Client.on_message(filters.command("sd") & filters.private)
 async def check_saved_details(client, message):
     try:
-        no = message.from_user.id-1
-        media_details = await db.files.find_one({"movies_no": no})
-        await message.reply({media_details})
+        # Use consistent logic for `movies_no`
+        movies_no = 591732965-1
+        media_details = await db.files.find_one({"movies_no": movies_no})
+        
+        if media_details:
+            await message.reply(str(media_details))
+        else:
+            await message.reply("No details found for this movie number.")
     except Exception as e:
-        await message.reply(str(e))
+        await message.reply(f"Error: {str(e)}")
     
 
 @Client.on_message(filters.command("duud") & filters.user(ADMINS))
