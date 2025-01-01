@@ -83,20 +83,35 @@ async def dbud(client, message):
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
-@Client.on_message(filters.command("sd") & filters.private)
-async def check_saved_details(client, message):
+@Client.on_message(filters.command("sd1") & filters.private)
+async def check_saved_details1(client, message):
     try:
-        # Use consistent logic for `movies_no`
-        movies_no = 591732965-3
-        media_details = await db.files.find()
+        media_details = db.files.find()
+        response = ""
+        async for document in media_details:
+            response += str(document) + "\n"
         
-        if media_details:
-            await message.reply(str(media_details))
+        if response:
+            await message.reply(response)
         else:
             await message.reply("No details found for this movie number.")
     except Exception as e:
         await message.reply(f"Error: {str(e)}")
-    
+
+@Client.on_message(filters.command("sd") & filters.private)
+async def check_saved_details(client, message):
+    try:
+        # Convert the cursor to a list (limit to 100 documents to avoid large results)
+        media_details = await db.files.find().to_list(length=100)
+        
+        if media_details:
+            # Reply with the details as a string
+            await message.reply(str(media_details))
+        else:
+            await message.reply("No details found for this movie number.")
+    except Exception as e:
+        # Send the error as a reply
+        await message.reply(f"Error: {str(e)}")
 
 @Client.on_message(filters.command("duud") & filters.user(ADMINS))
 async def duud(client, message):
