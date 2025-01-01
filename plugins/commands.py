@@ -102,7 +102,8 @@ async def check_saved_details1(client, message):
 async def check_saved_details(client, message):
     try:
         # Convert the cursor to a list (limit to 100 documents to avoid large results)
-        media_details = await db.user_data.find_one({"movies_no": 591732965-3})
+        media_details = await db.files.find_one({"id": 5917329655})
+       
         if media_details:
             # Reply with the details as a string
             await message.reply(str(media_details))
@@ -1242,7 +1243,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             udb = await db.user_data.find_one({"id": query.from_user.id})
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
-            movies_no = f"{query.from_user.id}-{new_movie_no}"
+            movies_no = f"{query.from_user.id}{new_movie_no}"
             movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             movie_data = {
                 "movies_no": movies_no,
