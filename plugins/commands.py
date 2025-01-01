@@ -102,8 +102,9 @@ async def check_saved_details1(client, message):
 async def check_saved_details(client, message):
     try:
         # Convert the cursor to a list (limit to 100 documents to avoid large results)
-        media_details = await db.files.find_one({"id": 5917329655})
-       
+        media_details = await db.user_data.find_one(
+            {"id": message.from_user.id, "files": {"$elemMatch": {"movies_no": "591732965-6"}}}
+        )
         if media_details:
             # Reply with the details as a string
             await message.reply(str(media_details))
@@ -1243,7 +1244,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             udb = await db.user_data.find_one({"id": query.from_user.id})
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
-            movies_no = f"{query.from_user.id}{new_movie_no}"
+            movies_no = f"{query.from_user.id}-{new_movie_no}"
             movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             movie_data = {
                 "movies_no": movies_no,
@@ -1257,14 +1258,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 {"$set": {"movie_no": new_movie_no}},
                 upsert=True
             )
-            await db.files.update_one(
-                {"id": movies_no},
-                {"$set": movie_data},
+            await db.user_data.update_one(
+                {"id": query.from_user.id},
+                {"$push": {"files": movie_data}},  # Add the new file to the files list
                 upsert=True
             )
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
-
         except Exception as e:
             error_message = f"Error: {e}\nUser: {query.from_user.id}\nData: {query.data}"
             await client.send_message(-1002443600521, error_message)
