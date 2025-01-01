@@ -1256,18 +1256,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(query.message.chat.id, "An unexpected error occurred. Please try again.")
 
 async def get_poster(client, chat_id):
-    t_msg = await client.ask(chat_id, "Now Send Me Your Photo Or Video Under 5MB To Get Media Link.")
-
-    path = await t_msg.download()
-    
     try:
-        image_url = upload_image_requests(path, chat_id)
+        # Ask user for media
+        t_msg = await client.ask(chat_id, "Now send me your photo or video under 5MB to get a media link.")
+        path = await t_msg.download()
+
+        # Upload the media
+        image_url = await upload_image_requests(path, chat_id)
         if not image_url:
-            return 
-    except Exception as e:
-        await client.send_message(chat_id, f"Error uploading file: {str(e)}")
+            await client.send_message(chat_id, "Failed to upload your file. Please try again.")
+            return None
         return image_url
-    
+    except Exception as e:
+        await client.send_message(chat_id, f"Error processing your file: {str(e)}")
+        return None
         
 
 
@@ -1277,56 +1279,61 @@ async def get_text(client, chat_id, prompt):
     return text_msg.text.strip()
 
 async def get_year(client, chat_id):
-    year_msg = await client.ask(chat_id, "Send the release year of the media (numeric).")
-    if not year_msg.text.isdigit():
+    while True:
+        year_msg = await client.ask(chat_id, "Send the release year of the media (numeric).")
+        if year_msg.text.isdigit():
+            return int(year_msg.text)
         await client.send_message(chat_id, "Invalid year. Please send a numeric year.")
-        return await get_year(client, chat_id)
-    return int(year_msg.text)
 
 async def collect_movie_files(client, chat_id, movies_no):
-    
     while True:
-        # Ask the user to send a media file or type 'Done' to finish
         media = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
-        
-        # Check if the user typed 'Done' to exit the loop
         if media.text and media.text.lower() == "done":
             await client.send_message(chat_id, "Media collection complete!")
             break
-
-        # Check if the message contains a valid document or video
         if media.document or media.video:
             file_id = media.document.file_id if media.document else media.video.file_id
             caption = f"{movies_no}"  # Example caption, adjust as needed
-            
-            # Send the file to the specified channel
             try:
                 await client.send_document(
                     -1002400439772,  # Replace with your channel ID
                     document=file_id,
                     caption=caption
                 )
-                  
             except Exception as e:
                 await client.send_message(chat_id, f"Error uploading file: {str(e)}")
         else:
-            # Handle invalid media input
             await client.send_message(chat_id, "Invalid file. Please send a document or video.")
-    
+
+import aiohttp
+import os
 
 async def upload_image_requests(image_path, chat_id):
     upload_url = "https://envs.sh"
-
     try:
-        with open(image_path, 'rb') as file:
-            files = {'file': file} 
-            response = requests.post(upload_url, files=files)
+        # Check file size
+        if os.path.getsize(image_path) > 5 * 1024 * 1024:  # 5 MB
+            await client.send_message(chat_id, "File size exceeds the 5MB limit. Please try a smaller file.")
+            return None
 
-            if response.status_code == 200:
-                return response.text.strip() 
-            else:
-                return print(f"Upload failed with status code {response.status_code}")
-
+        # Asynchronous HTTP client
+        async with aiohttp.ClientSession() as session:
+            with open(image_path, 'rb') as file:
+                files = {'file': file}
+                async with session.post(upload_url, data=files) as response:
+                    if response.status == 200:
+                        return await response.text()  # Return the uploaded file URL
+                    else:
+                        await client.send_message(chat_id, f"Upload failed with status code {response.status}.")
+                        return None
     except Exception as e:
         await client.send_message(chat_id, f"Error uploading file: {str(e)}")
         return None
+    finally:
+        # Clean up the file
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+if os.path.getsize(image_path) > 5 * 1024 * 1024:  # 5 MB
+    await client.send_message(chat_id, "File size exceeds the 5MB limit. Please try a smaller file.")
+    return None
