@@ -34,39 +34,7 @@ async def allowed(_, __, message):
 
 
 # Function to handle incoming text message
-@Client.on_message(filters.text & filters.chat(-1002396912415))
-async def incoming_gen_link(bot, message):
-    try:
-        text = message.text
-        msuid, file_link = text.split('-')  # Split the text into msuid and file link
-        msuid = msuid.strip()  # User ID
-        file_link = file_link.strip()  # File link
-        share_link = f"https://t.me/Get_Media_in_Store_bot?start={file_link}"
-        await bot.send_message(msuid, f"Here is your file link: {share_link}\n\n<code>{share_link}</code>")
-    except Exception as e:
-        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
 
-
-
-@Client.on_message((filters.document | filters.video | filters.audio) & filters.private)
-async def incoming_media(bot, message):
-    if not BOT_RUN and message.from_user.id not in ADMINS:
-        await message.reply(f'The bot is still under development. It will be officially released in January or February 2025.\n\nCurrently, this is made public only for introduction purposes, but it is not yet ready for use.')
-    try:
-        user_id = message.from_user.id
-        media = message.document or message.video or message.audio
-        caption = f"{user_id}"
-        
-        if message.document:
-            await bot.send_document(-1002400439772, document=media.file_id, caption=caption)
-        elif message.video:
-            await bot.send_video(-1002400439772, video=media.file_id, caption=caption)
-        elif message.audio:
-            await bot.send_audio(-1002400439772, audio=media.file_id, caption=caption)
-            
-    except Exception as e:
-        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
-        
 
 @Client.on_message(filters.command(['ink', 'link']) & filters.create(allowed))
 async def gen_link_s(bot, message):
