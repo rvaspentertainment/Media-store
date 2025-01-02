@@ -57,11 +57,18 @@ class Media(Document):
 # Ask Doubt on telegram @KingVJ01
 
 
-async def get_file_details(query):
+async def get_file_details1(query):
     filter = {'caption: query}
     cursor = Media.find(filter)
     filedetails = await cursor.to_list(length=100)
     return filedetails
+
+async def get_file_details(query):
+    filter = {'file_id': query}
+    cursor = Media.find(filter)
+    filedetails = await cursor.to_list(length=1)
+    return filedetails
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
