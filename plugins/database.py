@@ -58,9 +58,9 @@ class Media(Document):
 
 
 async def get_file_details(query):
-    filter = {'file_id': query}
+    filter = {'caption: query}
     cursor = Media.find(filter)
-    filedetails = await cursor.to_list(length=1)
+    filedetails = await cursor.to_list(length=100)
     return filedetails
 
 # Don't Remove Credit Tg - @VJ_Botz
