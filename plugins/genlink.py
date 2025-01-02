@@ -52,24 +52,10 @@ async def incoming_gen_link(bot, message):
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+        await bot.send_message(-1002443600521, f"{outstr}")
         
-        # Get user ID from caption
-        if message.caption:  # Ensure caption exists
-            msuid = int(message.caption)
-        else:
-            raise ValueError("Caption is missing or invalid for extracting user ID.")
         
-        user = await get_user(msuid)
-
-        # Generate the share link
         
-        # Check if the user has a shortener API
-        if user.get("base_site") and user.get("shortener_api"):
-            short_link = await get_short_link(user, share_link)
-            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{outstr}")
-        else:
-            await bot.send_message(chat_id=-1002396912415, text=f"{msuid}-{outstr}")
-
     except Exception as e:
         # Handle errors and log to a specific chat
         await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
