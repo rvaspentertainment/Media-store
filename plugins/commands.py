@@ -147,7 +147,7 @@ async def start(client, message):
         return
     data = message.command[1]
     try:
-        pre, file_id = data.split('_', 1)
+        pre, file_id, movies_no = data.split('_', 1)
     except:
         file_id = data
         pre = ""
@@ -287,17 +287,38 @@ async def start(client, message):
     if not files_:
         media_details = await db.user_data.find_one(
             {"id": message.from_user.id, "files.movies_no": movies_no},
-            {"files.$": 1}  # Project only the matched file
+            {"files.$": 1}  # Project only the matched file
         )
+        if not media_details or "files" not in media_details:
+            await message.reply("Movie not found!")
+            return
+            
         file_details = media_details["files"][0]
-        fidd = await get_file_details1(movies_no)
-        await client.send_photo(
-            chat_id=message.from_user.id,
-            photo=,
-            caption="",
-            reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.MARKDOWN
-        )
+        poster_url = file_details.get("poster_url")
+        movie_name = file_details.get("name")
+        release_year = file_details.get("year")
+        movie_language = file_details.get("language")
+        caption = f"🎬 **{movie_name}**\n🗓 **Year:** {release_year}\n🌐 **Language:** {movie_language}"
+        file_details_list = await get_file_details1(movies_no)
+        words = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "HEVC", "X265", "x265", "×265"]
+        buttons = []
+        for file in file_details_list:
+            file_name = file.get("file_name", "").lower()
+            file_size = file.get("file_size", 0)
+            file_id = file.get("file_id", "")
+            quality = next((word for word in words if word in file_name), "Unknown")
+            button_text = f"{quality.upper()} ({file_size // 1024 ** 2} MB)"
+            buttons.append(InlineKeyboardButton(button_text, callback_data=f"get_movie_{file_id}"))
+            if poster_url:
+                await client.send_photo(
+                    chat_id=message.from_user.id,
+                    photo=poster_url,
+                    caption=caption,
+                    reply_markup=InlineKeyboardMarkup([buttons]),
+                    parse_mode=enums.ParseMode.MARKDOWN
+                )
+            else:
+                await message.reply("Poster URL not available!")
         
 
 
