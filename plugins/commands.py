@@ -101,13 +101,16 @@ async def check_saved_details1(client, message):
 @Client.on_message(filters.command("sd") & filters.private)
 async def check_saved_details(client, message):
     try:
-        # Convert the cursor to a list (limit to 100 documents to avoid large results)
+        # Query to find the specific file
         media_details = await db.user_data.find_one(
-            {"id": message.from_user.id, "files": {"$elemMatch": {"movies_no": "591732965-1"}}}
+            {"id": message.from_user.id, "files.movies_no": "591732965-1"},
+            {"files.$": 1}  # Project only the matched file
         )
-        if media_details:
-            # Reply with the details as a string
-            await message.reply(str(media_details))
+        
+        if media_details and "files" in media_details:
+            # Reply with the details of the matched file
+            file_details = media_details["files"][0]
+            await message.reply(str(file_details))
         else:
             await message.reply("No details found for this movie number.")
     except Exception as e:
