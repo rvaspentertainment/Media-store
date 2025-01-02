@@ -407,10 +407,7 @@ async def start(client, message):
                     except Exception as e:
                         await message.reply(f"Error sending stream link: {str(e)}")
                     
-                if AUTO_DELETE_MODE == True:
-                    try:
-                        k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video
-
+                
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
     if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
