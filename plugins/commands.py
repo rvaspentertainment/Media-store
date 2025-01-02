@@ -285,63 +285,23 @@ async def start(client, message):
                                
     files_ = await get_file_details(file_id)           
     if not files_:
-        pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
-        if not await check_verification(client, message.from_user.id) and VERIFY_MODE == True:
-            btn = [[
-                InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{username}?start="))
-            ],[
-                InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
-            ]]
-            await message.reply_text(
-                text="<b>You are not verified !\nKindly verify to continue !</b>",
-                protect_content=True,
-                reply_markup=InlineKeyboardMarkup(btn)
-            )
-            return
-        try:
-            msg = await client.send_cached_media(
-                chat_id=message.from_user.id,
-                file_id=file_id,
-                protect_content=True if pre == 'filep' else False,  
-            )
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
-            size=get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
-                except:
-                    return
-            
-            await msg.edit_caption(f_caption)
-            if STREAM_MODE == True:
-                g = await msg.reply_text(
-                    text=f"**â€¢â€¢ Êá´á´œ á´„á´€É´ É¢á´‡É´á´‡Ê€á´€á´›á´‡ á´É´ÊŸÉªÉ´á´‡ sá´›Ê€á´‡á´€á´ ÊŸÉªÉ´á´‹ á´Ò“ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´€É´á´… á´€ÊŸsá´ Ò“á´€sá´› á´…á´á´¡É´ÊŸá´á´€á´… ÊŸÉªÉ´á´‹ Ò“á´Ê€ Êá´á´œÊ€ Ò“ÉªÊŸá´‡ á´„ÊŸÉªá´„á´‹ÉªÉ´É¢ á´É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´ ðŸ‘‡**",
-                    quote=True,
-                    disable_web_page_preview=True,
-                    reply_markup=InlineKeyboardMarkup(
-                        [
-                            [
-                                InlineKeyboardButton('ðŸš€ Fast Download / Watch OnlineðŸ–¥ï¸', callback_data=f'generate_stream_link:{file_id}')
-                            ]
-                        ]
-                    )
-                )
-            if AUTO_DELETE_MODE == True:
-                k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
-                await asyncio.sleep(AUTO_DELETE_TIME)
-                try:
-                    await msg.delete()
-                except:
-                    pass
-                await g.delete()
-                await k.edit_text("<b>Your File/Video is successfully deleted!!!</b>")
-            return
-        except:
-            pass
-        return await message.reply('No such file exist.')
+        media_details = await db.user_data.find_one(
+            {"id": message.from_user.id, "files.movies_no": movies_no},
+            {"files.$": 1}  # Project only the matched file
+        )
+        file_details = media_details["files"][0]
+        fidd = await get_file_details1(movies_no)
+        await client.send_photo(
+            chat_id=message.from_user.id,
+            photo=,
+            caption="",
+            reply_markup=InlineKeyboardMarkup(btn),
+            parse_mode=enums.ParseMode.MARKDOWN
+        )
+        
+
+
+        
     user_id  = message.from_user.id 
     files = files_[0]
     title = files.file_name
