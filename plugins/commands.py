@@ -1231,9 +1231,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_id = query.from_user.id
 
             # Get poster
-            poster1 = await get_poster(client, query.message.chat.id)
-            poster2 = poster1.strip()  
-            poster = poster2.replace("\n", "")
+            poster = await get_poster(client, query.message.chat.id)
+            
             if not poster:
                 return
 
