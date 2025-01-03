@@ -241,17 +241,19 @@ async def start(client, message):
                     file_name = file.get("file_name", "").lower()
                     file_size = file.get("file_size", 0)
                     file_id = file.get("file_id", "")
-                    quality = next((word for word in words if word in file_name), "Unknown")
+                    quality = next((word for word in ["360p", "480p", "720p"] if word in file_name), "Unknown")
                     button_text = f"{quality.upper()} ({file_size // 1024 ** 2} MB)"
-                    buttons.append(InlineKeyboardButton(button_text, callback_data=f"get_movie_{file_id}"))
-                if poster_url:
-                    await client.send_photo(
-                        chat_id=message.from_user.id,
-                        photo=poster_url,
-                        caption=caption,
-                        reply_markup=InlineKeyboardMarkup([buttons]),
-                        parse_mode=enums.ParseMode.MARKDOWN
-                    )
+                    buttons.append([InlineKeyboardButton(button_text, callback_data=f"get_movie_{file_id}")])
+                if not buttons:
+                    await message.reply("No valid files found.")
+                    return
+                await client.send_photo(
+                    chat_id=message.from_user.id,
+                    photo=poster_url,
+                    caption=caption,
+                    reply_markup=InlineKeyboardMarkup(buttons),
+                    parse_mode=enums.ParseMode.MARKDOWN
+                )
                 else:
                     await message.reply("Poster URL not available!")
             except Exception as e:
