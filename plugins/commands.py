@@ -109,7 +109,7 @@ async def start(client, message):
             if not await db.is_user_exist(message.from_user.id):
                 await db.add_user(message.from_user.id, message.from_user.first_name)
                 await client.send_message(
-                    LOG_CHANNEL, 
+                    LOG_CHANNEL,
                     script.LOG_TEXT.format(message.from_user.id, message.from_user.mention)
                 )
         except Exception as e:
@@ -118,21 +118,23 @@ async def start(client, message):
 
         if len(message.command) != 2:
             try:
-                buttons = [[
-                    InlineKeyboardButton('💝 Subscribe My YouTube Channel', url='https://youtube.com/@Tech_VJ')
-                ],[
-                    InlineKeyboardButton('🔍 Support Group', url='https://t.me/vj_bot_disscussion'),
-                    InlineKeyboardButton('🤖 Update Channel', url='https://t.me/vj_botz')
-                ],[
-                    InlineKeyboardButton('💁‍♀️ Help', callback_data='help'),
-                    InlineKeyboardButton('😊 About', callback_data='about')
-                ]]
+                buttons = [
+                    [InlineKeyboardButton('💝 Subscribe My YouTube Channel', url='https://youtube.com/@Tech_VJ')],
+                    [
+                        InlineKeyboardButton('🔍 Support Group', url='https://t.me/vj_bot_disscussion'),
+                        InlineKeyboardButton('🤖 Update Channel', url='https://t.me/vj_botz')
+                    ],
+                    [
+                        InlineKeyboardButton('💁‍♀️ Help', callback_data='help'),
+                        InlineKeyboardButton('😊 About', callback_data='about')
+                    ]
+                ]
                 if CLONE_MODE:
                     buttons.append([InlineKeyboardButton('🤖 Create Your Own Clone Bot', callback_data='clone')])
                 reply_markup = InlineKeyboardMarkup(buttons)
-                user_id = message.from_user.id 
+                user_id = message.from_user.id
                 txt = script.START_TXT
-                ttxt = await translate_text(txt, user_id)    
+                ttxt = await translate_text(txt, user_id)
                 await message.reply_photo(
                     photo=random.choice(PICS),
                     caption=ttxt,
@@ -316,3 +318,65 @@ async def start(client, message):
                         await message.reply(f"Error sending stream link: {str(e)}")
         except Exception as e:
             await message.reply(f"Error: {str(e)}")
+        
+    except Exception as e:
+        await message.reply(f"Unexpected error: {str(e)}")
+
+
+@Client.on_callback_query()
+async def cb_handler(client: Client, query: CallbackQuery):
+    if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
+        await query.answer(
+            text='Bot is under maintenance.',
+            show_alert=True  # Show as an alert instead of a toast
+        )
+        return
+    if query.data == "close_data":
+        await query.message.delete()
+    
+    elif query.data.startswith("generate_stream_link"):
+        _, file_id = query.data.split(":")
+        try:
+            user_id = query.from_user.id
+            username =  query.from_user.mention 
+            log_msg = await client.send_cached_media(
+                chat_id=LOG_CHANNEL,
+                file_id=file_id,
+            )
+            fileName = {quote_plus(get_name(log_msg))}
+            stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+            download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
+            xo = await query.message.reply_text(f'ðŸ”')
+            await asyncio.sleep(1)
+            await xo.delete()
+            button = [[
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
+            ]]
+            reply_markup=InlineKeyboardMarkup(button)
+            await log_msg.reply_text(
+                text=f"â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… êœ°á´Ê€ Éªá´… #{user_id} \nâ€¢â€¢ á´œêœ±á´‡Ê€É´á´€á´á´‡ : {username} \n\nâ€¢â€¢ á–´áŽ¥á’ªá—´ Ná—©á—°á—´ : {fileName}",
+                quote=True,
+                disable_web_page_preview=True,
+                reply_markup=reply_markup
+            )
+            button = [[
+                InlineKeyboardButton("ðŸš€ Fast Download ðŸš€", url=download),  # we download Link
+                InlineKeyboardButton('ðŸ–¥ï¸ Watch online ðŸ–¥ï¸', url=stream)
+            ],[
+                InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
+            ]]
+            reply_markup=InlineKeyboardMarkup(button)
+            await query.message.reply_text(
+                text="â€¢â€¢ ÊŸÉªÉ´á´‹ É¢á´‡É´á´‡Ê€á´€á´›á´‡á´… â˜ ï¸Žâš”",
+                quote=True,
+                disable_web_page_preview=True,
+                reply_markup=reply_markup
+            )
+        except Exception as e:
+            print(e)  # print the error message
+            await query.answer(f"â˜£something went wrong\n\n{e}", show_alert=True)
+            return
+    
+            
+
