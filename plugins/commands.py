@@ -316,8 +316,3 @@ async def start(client, message):
                         await message.reply(f"Error sending stream link: {str(e)}")
         except Exception as e:
             await message.reply(f"Error: {str(e)}")
-
-
-                    
-                    
-                
