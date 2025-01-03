@@ -175,7 +175,7 @@ async def start(client, message):
             )
             return
 
-        data, movies_no = message.command[1]
+        data = message.command[1]
         try:
             pre, file_id = data.split('_', 1)
             
@@ -217,6 +217,7 @@ async def start(client, message):
 
         if not files_:
             try:
+                movies_no = data
                 media_details = await db.user_data.find_one(
                     {"id": message.from_user.id, "files.movies_no": movies_no},
                     {"files.$": 1}  # Project only the matched file
