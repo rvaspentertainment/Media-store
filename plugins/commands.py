@@ -86,6 +86,237 @@ async def tr(client, message):
     except Exception as e:
         await message.reply_text(f"Error: {str(e)}")
 
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+@Client.on_message(filters.command("start") & filters.incoming)
+async def start(client, message):
+    try:
+        if not BOT_RUN and message.from_user.id not in ADMINS:
+            await message.reply(
+                'The bot is still under development. It will be officially released in January or February 2025.\n\n'
+                'Currently, this is made public only for introduction purposes, but it is not yet ready for use.'
+            )
+            return
+
+        try:
+            username = (await client.get_me()).username
+        except Exception as e:
+            await message.reply(f"Error fetching bot username: {str(e)}")
+            return
+
+        try:
+            if not await db.is_user_exist(message.from_user.id):
+                await db.add_user(message.from_user.id, message.from_user.first_name)
+                await client.send_message(
+                    LOG_CHANNEL, 
+                    script.LOG_TEXT.format(message.from_user.id, message.from_user.mention)
+                )
+        except Exception as e:
+            await message.reply(f"Error checking/adding user: {str(e)}")
+            return
+
+        if len(message.command) != 2:
+            try:
+                buttons = [[
+                    InlineKeyboardButton('💝 Subscribe My YouTube Channel', url='https://youtube.com/@Tech_VJ')
+                ],[
+                    InlineKeyboardButton('🔍 Support Group', url='https://t.me/vj_bot_disscussion'),
+                    InlineKeyboardButton('🤖 Update Channel', url='https://t.me/vj_botz')
+                ],[
+                    InlineKeyboardButton('💁‍♀️ Help', callback_data='help'),
+                    InlineKeyboardButton('😊 About', callback_data='about')
+                ]]
+                if CLONE_MODE:
+                    buttons.append([InlineKeyboardButton('🤖 Create Your Own Clone Bot', callback_data='clone')])
+                reply_markup = InlineKeyboardMarkup(buttons)
+                user_id = message.from_user.id 
+                txt = script.START_TXT
+                ttxt = await translate_text(txt, user_id)    
+                await message.reply_photo(
+                    photo=random.choice(PICS),
+                    caption=ttxt,
+                    reply_markup=reply_markup
+                )
+            except Exception as e:
+                await message.reply(f"Error preparing start message: {str(e)}")
+            return
+
+        if AUTH_CHANNEL and not await is_subscribed(client, message):
+            try:
+                invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+            except ChatAdminRequired:
+                logger.error("Make sure Bot is admin in Forcesub channel")
+                return
+            btn = [
+                [
+                    InlineKeyboardButton("❆ Join Our Channel ❆", url=invite_link.invite_link)
+                ],[
+                    InlineKeyboardButton('🤔 Why Iam Join🤔', callback_data='sinfo')
+                ]
+            ]
+            if message.command[1] != "subscribe":
+                try:
+                    kk, file_id = message.command[1].split("_", 1)
+                    btn.append([InlineKeyboardButton("↻ Try Again", callback_data=f"checksub#{kk}#{file_id}")])
+                except (IndexError, ValueError):
+                    btn.append([InlineKeyboardButton("↻ Try Again", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+            await client.send_photo(
+                chat_id=message.from_user.id,
+                photo="https://telegra.ph/file/20b4aaaddb8aba646e53c.jpg",
+                caption="**You are not in our channel given below so you don't get the movie file...\n\n"
+                        "If you want the movie file, click on the '🍿Join Our Back-Up Channel🍿' button below and join our back-up channel, "
+                        "then click on the '🔄 Try Again' button below...\n\n"
+                        "Then you will get the movie files...**",
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=enums.ParseMode.MARKDOWN
+            )
+            return
+
+        data = message.command[1]
+        try:
+            pre, file_id, movies_no = data.split('_', 1)
+        except ValueError:
+            file_id = data
+            pre = ""
+
+        if data.split("-", 1)[0] == "verify":
+            try:
+                userid = data.split("-", 2)[1]
+                token = data.split("-", 3)[2]
+                if str(message.from_user.id) != str(userid):
+                    return await message.reply_text(
+                        text="<b>Invalid link or Expired link !</b>",
+                        protect_content=True
+                    )
+                is_valid = await check_token(client, userid, token)
+                if is_valid:
+                    await message.reply_text(
+                        text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\n"
+                             "Now you have unlimited access for all files till today midnight.</b>",
+                        protect_content=True
+                    )
+                    await verify_user(client, userid, token)
+                else:
+                    return await message.reply_text(
+                        text="<b>Invalid link or Expired link !</b>",
+                        protect_content=True
+                    )
+            except Exception as e:
+                await message.reply_text(f"Error during verification: {str(e)}")
+            return
+
+        try:
+            files_ = await get_file_details(file_id)           
+        except Exception as e:
+            await message.reply(f"Error fetching file details: {str(e)}")
+            return
+
+        if not files_:
+            try:
+                media_details = await db.user_data.find_one(
+                    {"id": message.from_user.id, "files.movies_no": movies_no},
+                    {"files.$": 1}  # Project only the matched file
+                )
+                if not media_details or "files" not in media_details:
+                    await message.reply("Movie not found!")
+                    return
+                
+                file_details = media_details["files"][0]
+                poster_url = file_details.get("poster_url")
+                movie_name = file_details.get("name")
+                release_year = file_details.get("year")
+                movie_language = file_details.get("language")
+                caption = f"🎬 **{movie_name}**\n🗓 **Year:** {release_year}\n🌐 **Language:** {movie_language}"
+                file_details_list = await get_file_details1(movies_no)
+                words = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "HEVC", "X265", "x265", "×265"]
+                buttons = []
+                for file in file_details_list:
+                    file_name = file.get("file_name", "").lower()
+                    file_size = file.get("file_size", 0)
+                    file_id = file.get("file_id", "")
+                    quality = next((word for word in words if word in file_name), "Unknown")
+                    button_text = f"{quality.upper()} ({file_size // 1024 ** 2} MB)"
+                    buttons.append(InlineKeyboardButton(button_text, callback_data=f"get_movie_{file_id}"))
+                if poster_url:
+                    await client.send_photo(
+                        chat_id=message.from_user.id,
+                        photo=poster_url,
+                        caption=caption,
+                        reply_markup=InlineKeyboardMarkup([buttons]),
+                        parse_mode=enums.ParseMode.MARKDOWN
+                    )
+                else:
+                    await message.reply("Poster URL not available!")
+            except Exception as e:
+                await message.reply(f"Error processing file details: {str(e)}")
+            return
+
+        try:
+            user_id = message.from_user.id
+            files = files_[0]
+            title = files.file_name
+            size = get_size(files.file_size)
+            f_caption = files.file_name
+            msuid = files.caption 
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(
+                        file_name=title if title else '',
+                        file_size=size if size else '',
+                        file_caption=f_caption if f_caption else ''
+                    )
+                except Exception as e:
+                    logger.exception(e)
+                    f_caption = f_caption
+            if not f_caption:
+                f_caption = f"{files.file_name}"
+            if db.user_data[msuid]["shortner-type"] == "verify" and db.user_data[msuid]["shortner"] and user_id not in db.user_data[msuid]["premium-users"]:
+                if not await check_verification(client, message.from_user.id) and VERIFY_MODE:
+                    btn = [[
+                        InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{username}?start="))
+                    ],[
+                        InlineKeyboardButton("How To Open Link & Verify", url=VERIFY_TUTORIAL)
+                    ]]
+                    await message.reply_text(
+                        text="<b>You are not verified !\nKindly verify to continue !</b>",
+                        protect_content=True,
+                        reply_markup=InlineKeyboardMarkup(btn)
+                    )
+                    return
+                try:
+                    x = await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=file_id,
+                        caption=f_caption,
+                        protect_content=True if pre == 'filep' else False,
+                    )
+                except Exception as e:
+                    await message.reply(f"Error sending cached media: {str(e)}")
+                    return
+                
+                db.user_data[user_id]["files_taken"] += 1
+                
+                if STREAM_MODE:
+                    try:
+                        g = await x.reply_text(
+                            text=f"**• To open get generate stream link click below**",
+                            quote=True,
+                            disable_web_page_preview=True,
+                            reply_markup=InlineKeyboardMarkup(
+                                [
+                                    [
+                                        InlineKeyboardButton('🚀 Fast Download / Watch Online📽️', callback_data=f'generate_stream_link:{file_id}')
+                                    ]
+                                ]
+                            )
+                        )
+                        return
+                    except Exception as e:
+                        await message.reply(f"Error sending stream link: {str(e)}")
+        except Exception as e:
+            await message.reply(f"Error: {str(e)}")
+
 
                     
                     
