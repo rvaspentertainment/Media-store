@@ -1231,10 +1231,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_id = query.from_user.id
 
             # Get poster
-            poster = await get_poster(client, query.message.chat.id)
+            poster1 = await get_poster(client, query.message.chat.id)
+            poster2 = poster1.strip()  
+            poster = poster2.replace("\n", "")
             if not poster:
                 return
 
+        
             # Get media details
             movie_name = await get_text(client, query.message.chat.id, "Send the name of the media.")
             release_year = await get_year(client, query.message.chat.id)
