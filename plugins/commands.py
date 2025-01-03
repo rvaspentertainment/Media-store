@@ -175,10 +175,10 @@ async def start(client, message):
             )
             return
 
-        data = message.command[1]
+        data, movies_no = message.command[1]
         try:
             pre, file_id = data.split('_', 1)
-            movies_no = message.text.split(" ", 1)  # Split the message into command and argument
+            
         except ValueError:
             file_id = data
             pre = ""
