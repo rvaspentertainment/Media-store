@@ -227,7 +227,9 @@ async def start(client, message):
                     return
                 
                 file_details = media_details["files"][0]
-                poster_url = file_details.get("poster_url")
+                poster = file_details.get("poster_url")
+                poster2 = poster.strip()  
+                poster_url = poster2.replace("\n", "")
                 movie_name = file_details.get("name")
                 release_year = file_details.get("year")
                 movie_language = file_details.get("language")
