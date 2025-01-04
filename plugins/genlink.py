@@ -36,29 +36,46 @@ from pyrogram.enums import MessageMediaType
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
+        # Get bot's username
         username = (await bot.get_me()).username
         
         # Determine the media type
         if message.video:
-            file_type = "video"
+            media = message.video
         elif message.document:
-            file_type = "document"
+            media = message.document
         elif message.audio:
-            file_type = "audio"
+            media = message.audio
         else:
             raise ValueError("Unsupported media type.")
         
-        media = getattr(message, file_type)  # Access the correct media type
+        # Extract the caption
+        if not message.caption:
+            raise ValueError("Caption is required to identify movies_no.")
+        
+        movies_no = message.caption.strip()  # Treat the caption as the full movies_no
+        
+        # Extract the file_id and generate outstr
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+        
+        # Extract user_id from movies_no (if needed)
+        user_id = int(movies_no.split("-")[0])  # Extract user_id from the movies_no
+        
+        # Update the database
+        await db.user_data.update_one(
+            {"id": user_id, "files.movies_no": movies_no},  # Match by user_id and movies_no
+            {"$addToSet": {"files.$.movie_id": outstr}},  # Add outstr as movie_id if it doesn't exist
+            upsert=True
+        )
+        
+        # Send outstr to the target chat
         await bot.send_message(-1002443600521, f"{outstr}")
-        
-        
-        
+    
     except Exception as e:
-        # Handle errors and log to a specific chat
-        await bot.send_message(-1002443600521, f"An error occurred: {str(e)}")
+        # Handle errors gracefully
+        await bot.send_message(message.chat.id, f"Error: {str(e)}")
         
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
