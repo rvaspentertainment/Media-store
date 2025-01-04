@@ -352,7 +352,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         try:
             file_id = query.data.split("_")[1]  # Extract file ID from callback data
             await query.answer(
-                url=f"https://telegram.me/{temp.U_NAME}?start={file_id}"  # Respond with URL
+                url=f"https://telegram.me/Get_Media_in_Store_bot?start={file_id}"  # Respond with URL
             )
         except Exception as e:
             # Handle any exceptions that occur
