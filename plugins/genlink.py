@@ -60,10 +60,23 @@ async def incoming_gen_link(bot, message):
         else:
             raise ValueError("Unsupported media type.")
 
-        # Ensure caption exists to extract movies_no
+        # Ensure caption exists
         if not message.caption:
-            raise ValueError("Caption is required to identify movies_no.")
-        movies_no = message.caption.strip()  # Use the full caption as movies_no
+            raise ValueError("Caption is required to extract movie details.")
+
+        # Extract details from caption
+        caption_parts = message.caption.strip().split("-")
+        if len(caption_parts) < 5:
+            raise ValueError("Caption format is incorrect. Expected format: poster-movie_name-release_year-movie_language-movies_no")
+
+        poster = caption_parts[0]
+        movie_name = caption_parts[1]
+        release_year = caption_parts[2]
+        movie_language = caption_parts[3]
+        movies_no = caption_parts[4]
+        
+        # Extract user_id from movies_no
+        user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
 
         # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
@@ -100,25 +113,53 @@ async def incoming_gen_link(bot, message):
         elif found_codecs:
             resolution = " ".join(found_codecs).capitalize()
 
-        # Extract user_id from movies_no (if applicable)
-        user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
-
-        # Prepare the file data to be stored
+        # Prepare the file data
         file_data = {
             "id": outstr,
             "resolution": resolution,
             "size": file_size
         }
 
-        # Update the database with the file data
-        await db.user_data.update_one(
-            {"id": user_id, "files.movies_no": movies_no},  # Match by user_id and movies_no
-            {"$addToSet": {"files.$.movie_id": file_data}},  # Add file_data as movie_id if it doesn't exist
-            upsert=True
+        # Check if the movies_no already exists
+        existing_movie = await db.user_data.find_one(
+            {"id": user_id, "files.movies_no": movies_no},
+            {"files.$": 1}  # Fetch only the matched movie
         )
 
-        # Notify target chat with the outstr and file details
-        await bot.send_message(-1002443600521, f"File ID Stored: {outstr}\nResolution: {resolution}\nSize: {file_size}")
+        if existing_movie:
+            # If movies_no exists, add the new file_id to the existing movie
+            await db.user_data.update_one(
+                {"id": user_id, "files.movies_no": movies_no},
+                {"$addToSet": {"files.$.movie_id": file_data}}  # Add only if not already present
+            )
+        else:
+            # If movies_no doesn't exist, create a new movie entry
+            movie_data = {
+                "movies_no": movies_no,
+                "movie_id": [file_data],  # Add the first file data
+                "name": movie_name,
+                "poster_url": poster,
+                "year": release_year,
+                "language": movie_language
+            }
+
+            await db.user_data.update_one(
+                {"id": user_id},
+                {"$push": {"files": movie_data}},  # Add the new file to the files list
+                upsert=True
+            )
+
+        # Notify target chat
+        await bot.send_message(
+            -1002443600521,
+            f"Movie Updated:\n"
+            f"Name: {movie_name}\n"
+            f"Year: {release_year}\n"
+            f"Language: {movie_language}\n"
+            f"Resolution: {resolution}\n"
+            f"Size: {file_size}\n"
+            f"File ID: {outstr}"
+        )
 
     except Exception as e:
         # Handle errors gracefully
