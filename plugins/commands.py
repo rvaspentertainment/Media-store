@@ -1270,6 +1270,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 {"$push": {"files": movie_data}},  # Add the new file to the files list
                 upsert=True
             )
+            await asyncio.sleep(2)
             movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
