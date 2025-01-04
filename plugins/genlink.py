@@ -8,6 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, UsernameI
 from config import ADMINS, LOG_CHANNEL, PUBLIC_FILE_STORE, WEBSITE_URL, WEBSITE_URL_MODE
 from plugins.database import unpack_new_file_id
 from plugins.users_api import get_user, get_short_link
+from plugins.dbusers import db
 import re
 import os
 import json
