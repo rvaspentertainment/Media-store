@@ -345,14 +345,23 @@ async def start(client, message):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
-    if not BOT_RUN and query.from_user.id not in ADMINS:  # Corrected `callback_query` to `query`
+    if not BOT_RUN and query.from_user.id not in ADMINS:  # Check if bot is under maintenance
         await query.answer(
-            text='Bot is under maintenance.',
+            text="Bot is under maintenance.",
             show_alert=True  # Show as an alert instead of a toast
         )
         return
-    if query.data == "close_data":
+
+    if query.data == "close_data":  # Handle 'close_data' action
         await query.message.delete()
+        return
+
+    elif query.data.startswith("file_"):  # Handle 'file_' action
+        file_id = query.data.split("_")[1]  # Extract file ID from callback data
+        await query.answer(
+            url=f"https://telegram.me/{temp.U_NAME}?start={file_id}"  # Respond with URL
+        )
+        return
     
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
