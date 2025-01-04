@@ -58,9 +58,9 @@ class Media(Document):
 
 
 async def get_file_details1(query):
-    filter = {'caption': query}
-    cursor = Media.find(filter)
-    filedetails = await cursor.to_list(length=100)
+    filter = {'caption': {'$regex': query, '$options': 'i'}}  # Case-insensitive match
+    cursor = Media.objects(**filter)
+    filedetails = await cursor.limit(100).all()  # Limit to 100 results
     return filedetails
 
 async def get_file_details(query):
