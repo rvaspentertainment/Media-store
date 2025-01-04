@@ -1244,7 +1244,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 client, query.message.chat.id, 
                 "Send the language(s) of the media (e.g., Kannada-English-Telugu)."
             )
-
+            
             
             
             udb = await db.user_data.find_one({"id": query.from_user.id})
@@ -1252,26 +1252,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
             movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
-            movie_data = {
-                "movies_no": movies_no,
-                "movie_id": [],
-                "name": movie_name,
-                "poster_url": poster,
-                "year": release_year,
-                "language": movie_language
-            }
+            
+            await collect_movie_files(client, query.from_user.id, caption)
+     
             await db.user_data.update_one(
                 {"id": query.from_user.id},
                 {"$set": {"movie_no": new_movie_no}},
                 upsert=True
             )
-            await db.user_data.update_one(
-                {"id": query.from_user.id},
-                {"$push": {"files": movie_data}},  # Add the new file to the files list
-                upsert=True
-            )
-            await asyncio.sleep(2)
-            movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
         except Exception as e:
