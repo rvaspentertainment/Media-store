@@ -171,8 +171,10 @@ async def start(client, message):
                 f"🗓 **Year:** {release_year}\n"
                 f"🌐 **Language:** {movie_language}"
             )
-
+            await message.reply_text(caption)
+         
             file_details_list = await get_file_details1(movies_no)
+            await message.reply_text(file_details_list)
             words = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "HEVC", "X265", "x265", "×265"]
             buttons = []
 
@@ -183,7 +185,7 @@ async def start(client, message):
                 resolution = [res for res in words if res in file_name]
                 resolution_text = resolution[0] if resolution else "Unknown Resolution"
                 buttons.append(
-                    [InlineKeyboardButton(f"{resolution_text} - {file_size}", callback_data=f"file_{file_id}")]
+                    [InlineKeyboardButton(f"{file_size}", callback_data=f"file_{file_id}")]
                 )
 
             reply_markup = InlineKeyboardMarkup(buttons)
