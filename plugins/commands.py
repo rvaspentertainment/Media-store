@@ -1311,19 +1311,14 @@ async def get_year(client, chat_id):
 
 async def collect_movie_files(client, chat_id, movies_no):
     while True:
-        media = await client.ask(chat_id, "Send the media file (document or video) or type 'Done' to finish:")
-        
+        media = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
         if media.text and media.text.lower() == "done":
             await client.send_message(chat_id, "Media collection complete!")
             break
-        
-        # Handle both document and video
         if media.document or media.video:
             file_id = media.document.file_id if media.document else media.video.file_id
-            caption = f"{movies_no}"  # Adjust caption as needed
-            
+            caption = f"{movies_no}"  # Example caption, adjust as needed
             try:
-                # Send the document or video to the channel
                 if media.document:
                     await client.send_document(
                         -1002400439772,  # Replace with your channel ID
@@ -1336,11 +1331,10 @@ async def collect_movie_files(client, chat_id, movies_no):
                         video=file_id,
                         caption=caption
                     )
-                await client.send_message(chat_id, "Media uploaded successfully!")
             except Exception as e:
                 await client.send_message(chat_id, f"Error uploading file: {str(e)}")
         else:
-            await client.send_message(chat_id, "Invalid file. Please send a valid document or video.")
+            await client.send_message(chat_id, "Invalid file. Please send a document or video.")
 
 import aiohttp
 import os
