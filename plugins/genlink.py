@@ -33,13 +33,23 @@ async def allowed(_, __, message):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+def get_size(size_in_bytes):
+    if size_in_bytes < 1024:
+        return f"{size_in_bytes} B"
+    elif size_in_bytes < 1024 ** 2:
+        return f"{size_in_bytes / 1024:.2f} KB"
+    elif size_in_bytes < 1024 ** 3:
+        return f"{size_in_bytes / 1024 ** 2:.2f} MB"
+    else:
+        return f"{size_in_bytes / 1024 ** 3:.2f} GB"
+
 from pyrogram.enums import MessageMediaType
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
         # Get bot's username
         username = (await bot.get_me()).username
-        
+
         # Determine the media type
         if message.video:
             media = message.video
@@ -49,31 +59,49 @@ async def incoming_gen_link(bot, message):
             media = message.audio
         else:
             raise ValueError("Unsupported media type.")
-        
-        # Extract the caption
+
+        # Ensure caption exists to extract movies_no
         if not message.caption:
             raise ValueError("Caption is required to identify movies_no.")
-        
-        movies_no = message.caption.strip()  # Treat the caption as the full movies_no
-        
-        # Extract the file_id and generate outstr
+        movies_no = message.caption.strip()  # Use the full caption as movies_no
+
+        # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+
+        # Extract file name, size, and resolution
+        file_name = media.file_name.lower() if media.file_name else "unknown"
+        file_size = get_size(media.file_size)  # Convert size to readable format
+        resolution = "Unknown Resolution"
         
-        # Extract user_id from movies_no (if needed)
-        user_id = int(movies_no.split("-")[0])  # Extract user_id from the movies_no
-        
+        # Check for resolution keywords in file name
+        resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "hevc", "x265", "×265"]
+        for res in resolution_keywords:
+            if res in file_name:
+                resolution = res
+                break
+
+        # Extract user_id from movies_no (if applicable)
+        user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
+
+        # Prepare the file data to be stored
+        file_data = {
+            "id": outstr,
+            "resolution": resolution,
+            "size": file_size
+        }
+
         # Update the database
         await db.user_data.update_one(
             {"id": user_id, "files.movies_no": movies_no},  # Match by user_id and movies_no
-            {"$addToSet": {"files.$.movie_id": outstr}},  # Add outstr as movie_id if it doesn't exist
+            {"$addToSet": {"files.$.movie_id": file_data}},  # Add file_data as movie_id if it doesn't exist
             upsert=True
         )
-        
-        # Send outstr to the target chat
-        await bot.send_message(-1002443600521, f"{outstr}")
-    
+
+        # Notify target chat with the outstr
+        await bot.send_message(-1002443600521, f"File ID Stored: {outstr}\nResolution: {resolution}\nSize: {file_size}")
+
     except Exception as e:
         # Handle errors gracefully
         await bot.send_message(message.chat.id, f"Error: {str(e)}")
