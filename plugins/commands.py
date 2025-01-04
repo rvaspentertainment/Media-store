@@ -1251,8 +1251,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
-            movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
-            
+            caption = f"{poster}-{movie_name}-{release_year}-{movie_language}-{movies_no}"
             await collect_movie_files(client, query.from_user.id, caption)
      
             await db.user_data.update_one(
@@ -1297,7 +1296,7 @@ async def get_year(client, chat_id):
             return int(year_msg.text)
         await client.send_message(chat_id, "Invalid year. Please send a numeric year.")
 
-async def collect_movie_files(client, chat_id, movies_no):
+async def collect_movie_files(client, chat_id, caption):
     while True:
         media = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
         if media.text and media.text.lower() == "done":
@@ -1305,7 +1304,7 @@ async def collect_movie_files(client, chat_id, movies_no):
             break
         if media.document or media.video:
             file_id = media.document.file_id if media.document else media.video.file_id
-            caption = f"{movies_no}"  # Example caption, adjust as needed
+            caption = f"{caption}"  # Example caption, adjust as needed
             try:
                 if media.document:
                     await client.send_document(
