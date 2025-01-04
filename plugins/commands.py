@@ -1254,7 +1254,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             movie_data = {
                 "movies_no": movies_no,
-                "movie_id": []
+                "movie_id": [],
                 "name": movie_name,
                 "poster_url": poster,
                 "year": release_year,
