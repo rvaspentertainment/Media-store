@@ -148,49 +148,80 @@ async def start(client, message):
             )
 
           
-    elif data.split("-", 1)[0] == "8112":
-        await message.reply("Invalid movie number format!")
-        return
-        movies_no = data.split("-", 1)[1]
-
-        # Fetch user data from the database
-        media_details = await db.user_data.find_one(
-            {"id": message.from_user.id, "files.movies_no": movies_no},
-            {"files.$": 1}  # Only fetch the matched file details
-        )
-        
-        if not media_details or "files" not in media_details:
-            await message.reply("Movie details not found!")
-            return
-
-        file_details_list = media_details["files"][0].get("movie_id", [])
-        
-        if not file_details_list:
-            await message.reply("No file details available for this movie.")
-            return
-
-        # Generate caption
-        caption = (
-            f"🎬 **Movie Details**\n"
-            f"🎥 **Movies No:** {movies_no}\n"
-            f"📂 **Available Files:** {len(file_details_list)}"
-        )
-
-        # Generate buttons
-        buttons = []
-        for file in file_details_list:
-            resolution = file.get("resolution", "Unknown Resolution")
-            size = file.get("size", "Unknown Size")
-            file_id = file.get("id", "")
-            buttons.append(
-                [InlineKeyboardButton(f"{resolution} - {size}", callback_data=f"file_{file_id}")]
-            )
-
-        # Reply with movie details and buttons
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await message.reply_text(caption, reply_markup=reply_markup)
-
     
+
+    elif data.split("-", 1)[0] == "8112":
+        try:
+            # Extract movie number
+            movies_no = data.split("-", 1)[1].strip()
+            
+            # Fetch movie details from the database
+            media_details = await db.user_data.find_one(
+                {"id": message.from_user.id, "files.movies_no": movies_no},
+                {"files.$": 1}  # Project only the matched file
+            )
+            
+            if not media_details or "files" not in media_details:
+                await message.reply("Movie not found!")
+                return
+            
+            # Extract file details
+            file_details = media_details["files"][0]
+            poster_url = file_details.get("poster_url", "").replace("\n", "").strip()
+            movie_name = file_details.get("name", "Unknown Movie")
+            release_year = file_details.get("year", "Unknown Year")
+            movie_language = file_details.get("language", "Unknown Language")
+            movie_ids = file_details.get("movie_id", [])
+            
+            if not movie_ids:
+                await message.reply("No file IDs found for this movie!")
+                return
+            
+            # Prepare caption
+            caption = (
+                f"🎬 **{movie_name}**\n"
+                f"🗓 **Year:** {release_year}\n"
+                f"🌐 **Language:** {movie_language}"
+            )
+            
+            # Prepare buttons for each file
+            buttons = []
+            for movie_id in movie_ids:
+                if isinstance(movie_id, dict):
+                    file_id = movie_id.get("id", "Unknown ID")
+                    resolution_text = movie_id.get("resolution", "Unknown Resolution")
+                    file_size = movie_id.get("size", "Unknown Size")
+                    buttons.append(
+                        [
+                            InlineKeyboardButton(
+                                f"{resolution_text} - {file_size}",
+                                callback_data=f"file_{file_id}"
+                            )
+                        ]
+                    )
+                elif isinstance(movie_id, str):
+                    buttons.append(
+                        [
+                            InlineKeyboardButton(
+                                "Unknown Resolution - Unknown Size",
+                                callback_data=f"file_{movie_id}"
+                            )
+                        ]
+                    )
+            
+            # Send poster with buttons
+            if buttons:
+                reply_markup = InlineKeyboardMarkup(buttons)
+                await message.reply_photo(
+                    photo=poster_url,
+                    caption=caption,
+                    reply_markup=reply_markup
+                )
+            else:
+                await message.reply("No file details available to generate buttons.")
+        
+        except Exception as e:
+            await message.reply(f"Error: {e}")
             # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
