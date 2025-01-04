@@ -199,15 +199,7 @@ async def start(client, message):
                             )
                         ]
                     )
-                elif isinstance(movie_id, str):
-                    buttons.append(
-                        [
-                            InlineKeyboardButton(
-                                "Unknown Resolution - Unknown Size",
-                                callback_data=f"file_{movie_id}"
-                            )
-                        ]
-                    )
+                
             
             # Send poster with buttons
             if buttons:
@@ -357,11 +349,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
         return
 
     elif query.data.startswith("file_"):  # Handle 'file_' action
-        file_id = query.data.split("_")[1]  # Extract file ID from callback data
-        await query.answer(
-            url=f"https://telegram.me/{temp.U_NAME}?start={file_id}"  # Respond with URL
-        )
-        return
+        try:
+            file_id = query.data.split("_")[1]  # Extract file ID from callback data
+            await query.answer(
+                url=f"https://telegram.me/{temp.U_NAME}?start={file_id}"  # Respond with URL
+            )
+        except Exception as e:
+            # Handle any exceptions that occur
+            await query.answer(
+                text=f"{e}",
+                show_alert=True  # Show as an alert to notify the user
+            )
+            # Optionally, log the error for debugging
+            print(f"Error in file_ handler: {e}")
+            return
     
     elif query.data.startswith("generate_stream_link"):
         _, file_id = query.data.split(":")
