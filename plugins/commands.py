@@ -150,8 +150,8 @@ async def start(client, message):
           
     elif data.split("-", 1)[0] == "8112":
         try:
-            # Fetch the movie number
-            movies_no = data.split("-", 1)[1]
+            # Extract movie number
+            movies_no = message.text.split("-", 1)[1]
             media_details = await db.user_data.find_one(
                 {"id": message.from_user.id, "files.movies_no": movies_no},
                 {"files.$": 1}  # Project only the matched file
@@ -160,15 +160,19 @@ async def start(client, message):
                 await message.reply("Movie not found!")
                 return
 
-            # Extract movie details
+            # Get movie details
             file_details = media_details["files"][0]
             poster_url = file_details.get("poster_url", "").replace("\n", "").strip()
             movie_name = file_details.get("name")
             release_year = file_details.get("year")
             movie_language = file_details.get("language")
-            movie_ids = file_details.get("movie_id", [])  # List of movie IDs
+            movie_ids = file_details.get("movie_id", [])  # List of file IDs
 
-            # Create caption for movie details
+            if not movie_ids:
+                await message.reply("No file IDs found for this movie!")
+                return
+
+            # Prepare caption
             caption = (
                 f"🎬 **{movie_name}**\n"
                 f"🗓 **Year:** {release_year}\n"
@@ -176,60 +180,43 @@ async def start(client, message):
             )
             await message.reply_text(caption)
 
-            # Ensure we have movie IDs
-            if not movie_ids:
-                await message.reply("No movie files found!")
-                return
-
-            # Process all movie IDs
-            all_file_details = []
+            # Fetch details for all file IDs
+            buttons = []
             for file_id in movie_ids:
                 file_details_list = await get_file_details(file_id)
+                if file_details_list:
+                    for file in file_details_list:
+                        file_name = file.get("file_name", "Unknown")
+                        file_size = file.get("file_size", "Unknown")
+                        resolution = [
+                            word for word in ["360p", "480p", "720p", "1080p", "4k"]
+                            if word in file_name.lower()
+                        ]
+                        resolution_text = resolution[0] if resolution else "Unknown Resolution"
+                        buttons.append(
+                            [
+                                InlineKeyboardButton(
+                                    f"{resolution_text} - {file_size}",
+                                    callback_data=f"file_{file_id}"
+                                )
+                            ]
+                        )
+                else:
+                    await message.reply(f"Details not found for file_id: {file_id}")
 
-                # Check if details are empty or invalid
-                if not file_details_list:
-                    all_file_details.append(f"Details not found for file_id: {file_id}")
-                    continue
-
-                # Sanitize and add file details to the list
-                sanitized_details = str(file_details_list).replace("\x00", "").strip()
-                if len(sanitized_details) > 4096:  # Telegram max message length
-                    sanitized_details = sanitized_details[:4096] + "...\nMessage truncated."
-                all_file_details.append(sanitized_details)
-
-            # Combine all file details into a single message
-            final_message = "\n\n".join(all_file_details)
-            if len(final_message) > 4096:
-                final_message = final_message[:4096] + "...\nMessage truncated."
-
-            await message.reply_text(final_message)
-
-            # Generate resolution buttons for each file
-            words = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip",
-                     "dvdrip", "pre dvd", "HEVC", "X265", "x265", "×265"]
-            buttons = []
-
-            for file in file_details_list:
-                file_name = file.get("file_name", "").lower()
-                file_size = file.get("file_size", 0)
-                file_id = file.get("file_id")
-                resolution = [res for res in words if res in file_name]
-                resolution_text = resolution[0] if resolution else "Unknown Resolution"
-                buttons.append(
-                    [InlineKeyboardButton(f"{resolution_text} - {file_size}", callback_data=f"file_{file_id}")]
+            # Send poster with buttons
+            if buttons:
+                reply_markup = InlineKeyboardMarkup(buttons)
+                await message.reply_photo(
+                    photo=poster_url,
+                    caption=caption,
+                    reply_markup=reply_markup
                 )
-
-            # Send the final message with poster and buttons
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await message.reply_photo(
-                photo=poster_url,
-                caption=caption,
-                reply_markup=reply_markup
-            )
+            else:
+                await message.reply("No file details available to generate buttons.")
 
         except Exception as e:
             await message.reply(f"Error: {e}")
-            return
             # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
