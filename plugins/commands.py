@@ -149,22 +149,8 @@ async def start(client, message):
 
           
     elif data.split("-", 1)[0] == "8112":
-        @Client.on_message(filters.command("start") & filters.incoming)
-async def start(client, message):
-    try:
-        # Extract the command argument (e.g., "8112-movies_no")
-        if len(message.text.split()) > 1:
-            data = message.text.split()[1]
-        else:
-            await message.reply("Please provide a valid movie number!")
-            return
-
-        # Ensure valid data structure
-        if not data.startswith("8112-"):
-            await message.reply("Invalid movie number format!")
-            return
-
-        # Extract movies_no
+        await message.reply("Invalid movie number format!")
+        return
         movies_no = data.split("-", 1)[1]
 
         # Fetch user data from the database
@@ -204,8 +190,7 @@ async def start(client, message):
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_text(caption, reply_markup=reply_markup)
 
-    except Exception as e:
-        await message.reply(f"Error: {str(e)}")
+    
             # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
