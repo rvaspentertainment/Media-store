@@ -119,6 +119,56 @@ async def start(client, message):
             {"id": user_data["id"]}, {"$set": user_data}, upsert=True
         )
         return
+    if len(message.command) == 2:
+        data = message.command[1]
+        try:
+            # **Your New Code Logic for Movie Details**
+            movies_no = data
+            media_details = await db.user_data.find_one(
+                {"id": message.from_user.id, "files.movies_no": movies_no},
+                {"files.$": 1}  # Project only the matched file
+            )
+            if not media_details or "files" not in media_details:
+                await message.reply("Movie not found!")
+                return
+
+            file_details = media_details["files"][0]
+            poster_url = file_details.get("poster_url", "").replace("\n", "").strip()
+            movie_name = file_details.get("name")
+            release_year = file_details.get("year")
+            movie_language = file_details.get("language")
+
+            caption = (
+                f"🎬 **{movie_name}**\n"
+                f"🗓 **Year:** {release_year}\n"
+                f"🌐 **Language:** {movie_language}"
+            )
+
+            file_details_list = await get_file_details1(movies_no)
+            words = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "HEVC", "X265", "x265", "×265"]
+            buttons = []
+
+            for file in file_details_list:
+                file_name = file.get("file_name", "").lower()
+                file_size = file.get("file_size", 0)
+                file_id = file.get("file_id")
+                resolution = [res for res in words if res in file_name]
+                resolution_text = resolution[0] if resolution else "Unknown Resolution"
+                buttons.append(
+                    [InlineKeyboardButton(f"{resolution_text} - {file_size}", callback_data=f"file_{file_id}")]
+                )
+
+            reply_markup = InlineKeyboardMarkup(buttons)
+            await message.reply_photo(
+                photo=poster_url,
+                caption=caption,
+                reply_markup=reply_markup
+            )
+            return
+
+        except Exception as e:
+            await message.reply(f"Error: {e}")
+            return
     if len(message.command) != 2:
         buttons = [[
             InlineKeyboardButton('💝 sᴜʙsᴄʀɪʙᴇ ᴍʏ ʏᴏᴜᴛᴜʙᴇ ᴄʜᴀɴɴᴇʟ', callback_data='media_saver')
