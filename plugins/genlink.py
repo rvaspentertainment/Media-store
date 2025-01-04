@@ -75,12 +75,30 @@ async def incoming_gen_link(bot, message):
         file_size = get_size(media.file_size)  # Convert size to readable format
         resolution = "Unknown Resolution"
         
-        # Check for resolution keywords in file name
-        resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "4k", "2160p", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd", "hevc", "x265", "×265"]
+        # Define resolution and codec keywords
+        resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "2160p", "4k"]
+        codec_keywords = ["hevc", "x265", "×265", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd"]
+
+        found_resolutions = []
+        found_codecs = []
+
+        # Check for resolution keywords in the file name
         for res in resolution_keywords:
             if res in file_name:
-                resolution = res
-                break
+                found_resolutions.append(res)
+
+        # Check for codec keywords in the file name
+        for codec in codec_keywords:
+            if codec in file_name:
+                found_codecs.append(codec)
+
+        # Combine resolution and codec if both are found
+        if found_resolutions and found_codecs:
+            resolution = " ".join(found_resolutions + found_codecs).capitalize()
+        elif found_resolutions:
+            resolution = " ".join(found_resolutions).capitalize()
+        elif found_codecs:
+            resolution = " ".join(found_codecs).capitalize()
 
         # Extract user_id from movies_no (if applicable)
         user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
@@ -92,14 +110,14 @@ async def incoming_gen_link(bot, message):
             "size": file_size
         }
 
-        # Update the database
+        # Update the database with the file data
         await db.user_data.update_one(
             {"id": user_id, "files.movies_no": movies_no},  # Match by user_id and movies_no
             {"$addToSet": {"files.$.movie_id": file_data}},  # Add file_data as movie_id if it doesn't exist
             upsert=True
         )
 
-        # Notify target chat with the outstr
+        # Notify target chat with the outstr and file details
         await bot.send_message(-1002443600521, f"File ID Stored: {outstr}\nResolution: {resolution}\nSize: {file_size}")
 
     except Exception as e:
