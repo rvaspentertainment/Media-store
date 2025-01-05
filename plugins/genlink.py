@@ -168,6 +168,8 @@ async def incoming_gen_link(bot, message):
             f"Language: {movie_language}\n"
             f"Resolution: {resolution}\n"
             f"Size: {file_size}\n"
+            f"Size: {user_id}\n"
+            f"Size: {movies_no}\n"
             f"File ID: {outstr}"
         )
 
