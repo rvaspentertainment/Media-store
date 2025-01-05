@@ -44,6 +44,8 @@ def get_size(size_in_bytes):
         return f"{size_in_bytes / 1024 ** 3:.2f} GB"
 
 from pyrogram.enums import MessageMediaType
+from pymongo.errors import PyMongoError
+
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
@@ -120,34 +122,41 @@ async def incoming_gen_link(bot, message):
             "size": file_size
         }
 
+        # Debugging logs
+        print("File Data:", file_data)
+
         # Check if the movies_no already exists
         existing_movie = await db.user_data.find_one(
             {"id": user_id, "files.movies_no": movies_no},
             {"files.$": 1}  # Fetch only the matched movie
         )
 
+        print("Existing Movie:", existing_movie)  # Debugging log
+
         if existing_movie:
-            # If movies_no exists, add the new file_id to the existing movie
-            await db.user_data.update_one(
+            # Update existing movie
+            update_result = await db.user_data.update_one(
                 {"id": user_id, "files.movies_no": movies_no},
                 {"$addToSet": {"files.$.movie_id": file_data}}  # Add only if not already present
             )
+            print("Update Result:", update_result.modified_count)  # Debugging log
         else:
-            # If movies_no doesn't exist, create a new movie entry
+            # Add a new movie entry
             movie_data = {
                 "movies_no": movies_no,
-                "movie_id": [file_data],  # Add the first file data
+                "movie_id": [file_data],
                 "name": movie_name,
                 "poster_url": poster,
                 "year": release_year,
                 "language": movie_language
             }
 
-            await db.user_data.update_one(
+            update_result = await db.user_data.update_one(
                 {"id": user_id},
-                {"$push": {"files": movie_data}},  # Add the new file to the files list
+                {"$push": {"files": movie_data}},  # Add new file
                 upsert=True
             )
+            print("Insert Result:", update_result.upserted_id)  # Debugging log
 
         # Notify target chat
         await bot.send_message(
@@ -161,10 +170,13 @@ async def incoming_gen_link(bot, message):
             f"File ID: {outstr}"
         )
 
+    except PyMongoError as db_error:
+        # Handle database-specific errors
+        await bot.send_message(message.chat.id, f"Database Error: {str(db_error)}")
     except Exception as e:
-        # Handle errors gracefully
+        # Handle all other errors
         await bot.send_message(message.chat.id, f"Error: {str(e)}")
-        
+
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
     username = (await bot.get_me()).username
