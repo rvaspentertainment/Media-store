@@ -124,7 +124,7 @@ async def incoming_gen_link(bot, message):
         }
 
         # Check if the movies_no already exists
-        existing_movie = await user_data.find_one(
+        existing_movie = await db.user_data.find_one(
             {"id": user_id, "files.movies_no": movies_no},
             {"files.$": 1}  # Fetch only the matched movie
         )
@@ -136,7 +136,7 @@ async def incoming_gen_link(bot, message):
                 print("File Data already exists in movie_id. Skipping update.")
             else:
                 # Add new file_data
-                update_result = await user_data.update_one(
+                update_result = await db.user_data.update_one(
                     {"id": user_id, "files.movies_no": movies_no},
                     {"$addToSet": {"files.$.movie_id": file_data}}
                 )
@@ -152,7 +152,7 @@ async def incoming_gen_link(bot, message):
                 "language": movie_language
             }
 
-            update_result = await user_data.update_one(
+            update_result = await db.user_data.update_one(
                 {"id": user_id},
                 {"$push": {"files": movie_data}},
                 upsert=True
