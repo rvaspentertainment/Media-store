@@ -1254,11 +1254,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             caption = f"{poster}-{movie_name}-{release_year}-{movie_language}-{movies_no}"
             await collect_movie_files(client, query.from_user.id, caption)
      
-            await db.user_data.update_one(
-                {"id": query.from_user.id},
-                {"$set": {"movie_no": new_movie_no}},
-                upsert=True
-            )
+            
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
         except Exception as e:
