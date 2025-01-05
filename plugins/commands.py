@@ -1251,10 +1251,27 @@ async def cb_handler(client: Client, query: CallbackQuery):
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
-            caption = f"{poster}-{movie_name}-{release_year}-{movie_language}-{movies_no}"
-            await collect_movie_files(client, query.from_user.id, caption)
-     
+            movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
+            movie_data = {
+                "movies_no": movies_no,
+                "movie_id": [],
+                "name": movie_name,
+                "poster_url": poster,
+                "year": release_year,
+                "language": movie_language
+            }
+            await db.user_data.update_one(
+                {"id": query.from_user.id},
+                {"$set": {"movie_no": new_movie_no}},
+                upsert=True
+            )
+            await db.user_data.update_one(
+                {"id": query.from_user.id},
+                {"$push": {"files": movie_data}},  # Add the new file to the files list
+                upsert=True
+            )
             
+            movie_files = await collect_movie_files(client, query.from_user.id, movies_no)
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
         except Exception as e:
@@ -1292,7 +1309,7 @@ async def get_year(client, chat_id):
             return int(year_msg.text)
         await client.send_message(chat_id, "Invalid year. Please send a numeric year.")
 
-async def collect_movie_files(client, chat_id, caption):
+async def collect_movie_files(client, chat_id, movies_no):
     while True:
         media = await client.ask(chat_id, "Send the media file (or type 'Done' to finish).")
         if media.text and media.text.lower() == "done":
@@ -1300,7 +1317,7 @@ async def collect_movie_files(client, chat_id, caption):
             break
         if media.document or media.video:
             file_id = media.document.file_id if media.document else media.video.file_id
-            caption = f"{caption}"  # Example caption, adjust as needed
+            caption = f"{movies_no}"  # Example caption, adjust as needed
             try:
                 if media.document:
                     await client.send_document(
