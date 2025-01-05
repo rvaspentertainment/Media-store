@@ -13,6 +13,7 @@ import re
 import os
 import json
 import base64
+import asyncio 
 import logging
 
 # Don't Remove Credit Tg - @VJ_Botz
@@ -49,7 +50,7 @@ from pyrogram.enums import MessageMediaType
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
-        # Get bot's username
+        await asyncio.sleep(5)
         username = (await bot.get_me()).username
         
         # Determine the media type
