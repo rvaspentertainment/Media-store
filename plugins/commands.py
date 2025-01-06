@@ -35,6 +35,25 @@ async def dati():
         # Handle exceptions appropriately, e.g., logging or raising
         raise RuntimeError(f"Error in dati function: {str(e)}")
 
+@Client.on_message(filters.command("sd") & filters.private)
+async def check_saved_details(client, message):
+    try:
+        # Query to find the specific file
+        media_details = await db.user_data.find_one(
+            {"id": message.from_user.id}  # Find document by user ID
+        )
+
+        # Check if media_details is not None
+        if media_details:
+            # Reply with all details found in media_details
+            await message.reply(str(media_details))
+        else:
+            await message.reply("No details found for this user ID.")
+    except Exception as e:
+        # Send the error as a reply
+        await message.reply(f"Error: {str(e)}")
+
+
 @Client.on_message(filters.command("dbud") & filters.incoming)
 async def dbud(client, message):
     try:
