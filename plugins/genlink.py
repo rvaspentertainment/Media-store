@@ -50,9 +50,9 @@ from pyrogram.enums import MessageMediaType
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
-        await asyncio.sleep(5)
+        # Get bot's username
         username = (await bot.get_me()).username
-        
+
         # Determine the media type
         if message.video:
             media = message.video
@@ -62,35 +62,112 @@ async def incoming_gen_link(bot, message):
             media = message.audio
         else:
             raise ValueError("Unsupported media type.")
-        
-        # Extract the caption
+
+        # Ensure caption exists
         if not message.caption:
-            raise ValueError("Caption is required to identify movies_no.")
+            raise ValueError("Caption is required to extract movie details.")
+
+        # Extract details from caption
+        caption_parts = message.caption.strip().split("-")
+        if len(caption_parts) < 5:
+            raise ValueError("Caption format is incorrect. Expected format: poster-movie_name-release_year-movie_language-movies_no")
+
+        poster = caption_parts[0]
+        movie_name = caption_parts[1]
+        release_year = caption_parts[2]
+        movie_language = caption_parts[3]
+        movies_no = caption_parts[4]
         
-        movies_no = message.caption.strip()  # Treat the caption as the full movies_no
-        
-        # Extract the file_id and generate outstr
+        # Extract user_id from movies_no
+        user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
+
+        # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
         outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+
+        # Extract file name, size, and resolution
+        file_name = media.file_name.lower() if media.file_name else "unknown"
+        file_size = get_size(media.file_size)  # Convert size to readable format
+        resolution = "Unknown Resolution"
         
-        # Extract user_id from movies_no (if needed)
-        user_id = int(movies_no.split("-")[0])  # Extract user_id from the movies_no
-        
-        # Update the database
-        await db.user_data.update_one(
-            {"id": user_id, "files.movies_no": movies_no},  # Match by user_id and movies_no
-            {"$addToSet": {"files.$.movie_id": outstr}},  # Add outstr as movie_id if it doesn't exist
-            upsert=True
+        # Define resolution and codec keywords
+        resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "2160p", "4k"]
+        codec_keywords = ["hevc", "x265", "×265", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd"]
+
+        found_resolutions = []
+        found_codecs = []
+
+        # Check for resolution keywords in the file name
+        for res in resolution_keywords:
+            if res in file_name:
+                found_resolutions.append(res)
+
+        # Check for codec keywords in the file name
+        for codec in codec_keywords:
+            if codec in file_name:
+                found_codecs.append(codec)
+
+        # Combine resolution and codec if both are found
+        if found_resolutions and found_codecs:
+            resolution = " ".join(found_resolutions + found_codecs).capitalize()
+        elif found_resolutions:
+            resolution = " ".join(found_resolutions).capitalize()
+        elif found_codecs:
+            resolution = " ".join(found_codecs).capitalize()
+
+        # Prepare the file data
+        file_data = {
+            "id": outstr,
+            "resolution": resolution,
+            "size": file_size
+        }
+
+        # Check if the movies_no already exists
+        existing_movie = await db.user_data.find_one(
+            {"id": user_id, "files.movies_no": movies_no},
+            {"files.$": 1}  # Fetch only the matched movie
         )
-        
-        # Send outstr to the target chat
-        await bot.send_message(-1002443600521, f"{outstr}")
-    
+
+        if existing_movie:
+            # If movies_no exists, add the new file_id to the existing movie
+            await db.user_data.update_one(
+                {"id": user_id, "files.movies_no": movies_no},
+                {"$addToSet": {"files.$.movie_id": file_data}}  # Add only if not already present
+            )
+        else:
+            # If movies_no doesn't exist, create a new movie entry
+            movie_data = {
+                "movies_no": movies_no,
+                "movie_id": [file_data],  # Add the first file data
+                "name": movie_name,
+                "poster_url": poster,
+                "year": release_year,
+                "language": movie_language
+            }
+
+            await db.user_data.update_one(
+                {"id": user_id},
+                {"$push": {"files": movie_data}},  # Add the new file to the files list
+                upsert=True
+            )
+
+        # Notify target chat
+        await bot.send_message(
+            -1002443600521,
+            f"Movie Updated:\n"
+            f"Name: {movie_name}\n"
+            f"Year: {release_year}\n"
+            f"Language: {movie_language}\n"
+            f"Resolution: {resolution}\n"
+            f"Size: {file_size}\n"
+            f"File ID: {outstr}"
+        )
+
     except Exception as e:
         # Handle errors gracefully
         await bot.send_message(message.chat.id, f"Error: {str(e)}")
-# Start the bot
+        
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
