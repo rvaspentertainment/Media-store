@@ -39,7 +39,7 @@ async def dati():
 async def check_saved_details(client, message):
     try:
         # Query to find the specific file
-        media_details = await db.user_data.find_one(
+        media_details = await db.files.find_one(
             {"id": message.from_user.id}  # Find document by user ID
         )
 
