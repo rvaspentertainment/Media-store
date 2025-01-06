@@ -127,13 +127,13 @@ async def incoming_gen_link(bot, message):
         )
 
         # Check if the movies_no already exists
-        existing_movie = await db.user_data.find_one({"id": user_id, "files.movies_no": movies_no})
+        existing_movie = await db.files.find_one({"id": user_id, "movie_data": movies_no})
 
         if existing_movie:
             # Add the new file_id to the existing movie
             update_result = await db.user_data.update_one(
-                {"id": user_id, "files.movies_no": movies_no},
-                {"$addToSet": {"files.$.movie_id": file_data}}
+                {"id": user_id, "movie_data": movies_no},
+                {"$addToSet": {"movie_id": file_data}}
             )
             await bot.send_message(
                 message.chat.id,
@@ -142,6 +142,7 @@ async def incoming_gen_link(bot, message):
         else:
             # Create a new movie entry
             movie_data = {
+                "id": user_id, 
                 "movies_no": movies_no,
                 "movie_id": [file_data],
                 "name": movie_name,
@@ -150,9 +151,9 @@ async def incoming_gen_link(bot, message):
                 "language": movie_language
             }
 
-            update_result = await db.user_data.update_one(
+            update_result = await db.files.update_one(
                 {"id": user_id},
-                {"$push": {"files": movie_data}},
+                {"$push": {"movie_data": movie_data}},
                 upsert=True
             )
             await bot.send_message(
