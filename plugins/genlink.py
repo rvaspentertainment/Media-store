@@ -46,22 +46,28 @@ def get_size(size_in_bytes):
 
 from pyrogram.enums import MessageMediaType
 
-
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
+        await bot.send_message(message.chat.id, "Processing started...")
+
         # Get bot's username
         username = (await bot.get_me()).username
 
         # Determine the media type
         if message.video:
             media = message.video
+            media_type = "video"
         elif message.document:
             media = message.document
+            media_type = "document"
         elif message.audio:
             media = message.audio
+            media_type = "audio"
         else:
             raise ValueError("Unsupported media type.")
+        
+        await bot.send_message(message.chat.id, f"Media type: {media_type}")
 
         # Ensure caption exists
         if not message.caption:
@@ -79,8 +85,9 @@ async def incoming_gen_link(bot, message):
         user_id = caption_parts[4]
         movie_no = caption_parts[5]
         movies_no = f"{user_id}-{movie_no}"
-        
-      
+
+        await bot.send_message(message.chat.id, f"Caption details extracted:\nPoster: {poster}\nMovie Name: {movie_name}\nRelease Year: {release_year}\nLanguage: {movie_language}\nMovies No: {movies_no}")
+
         # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
@@ -123,6 +130,8 @@ async def incoming_gen_link(bot, message):
             "size": file_size
         }
 
+        await bot.send_message(message.chat.id, f"File details:\nID: {file_data['id']}\nResolution: {file_data['resolution']}\nSize: {file_data['size']}")
+
         # Check if the movies_no already exists
         existing_movie = await db.user_data.find_one(
             {"id": user_id, "files.movies_no": movies_no},
@@ -130,12 +139,16 @@ async def incoming_gen_link(bot, message):
         )
 
         if existing_movie:
+            await bot.send_message(message.chat.id, f"Existing movie found with movies_no: {movies_no}")
+
             # If movies_no exists, add the new file_id to the existing movie
             await db.user_data.update_one(
                 {"id": user_id, "files.movies_no": movies_no},
                 {"$addToSet": {"files.$.movie_id": file_data}}  # Add only if not already present
             )
         else:
+            await bot.send_message(message.chat.id, f"No existing movie found with movies_no: {movies_no}. Creating a new entry.")
+
             # If movies_no doesn't exist, create a new movie entry
             movie_data = {
                 "movies_no": movies_no,
@@ -164,10 +177,13 @@ async def incoming_gen_link(bot, message):
             f"File ID: {outstr}"
         )
 
+        await bot.send_message(message.chat.id, "Processing completed successfully.")
+
     except Exception as e:
         # Handle errors gracefully
         await bot.send_message(message.chat.id, f"Error: {str(e)}")
-        
+
+
 
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
