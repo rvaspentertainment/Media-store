@@ -76,11 +76,11 @@ async def incoming_gen_link(bot, message):
         movie_name = caption_parts[1]
         release_year = caption_parts[2]
         movie_language = caption_parts[3]
-        movies_no = caption_parts[4]
+        user_id = caption_parts[4]
+        movie_no = caption_parts[5]
+        movies_no = f"{user_id}-{movie_no}"
         
-        # Extract user_id from movies_no
-        user_id = int(movies_no.split("-")[0])  # Extract user_id from movies_no
-
+      
         # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
         string = f'file_{file_id}'
