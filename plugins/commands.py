@@ -97,7 +97,32 @@ async def check_saved_details1(client, message):
             await message.reply("No details found for this movie number.")
     except Exception as e:
         await message.reply(f"Error: {str(e)}")
+@Client.on_message(filters.command("sd") & filters.private)
+async def check_saved_details(client, message):
+    try:
+        # Query to find details in `movie_data` collection
+        media_details = await db.movie_data.find_one({"id": message.from_user.id})
 
+        # Query to find details in `movie_data1` collection
+        media_details1 = await db.movie_data1.find_one({"id": message.from_user.id})
+
+        # Prepare response based on the results
+        response = []
+        if media_details:
+            response.append(f"Details from movie_data:\n{str(media_details)}")
+        else:
+            response.append("No details found in `movie_data`.")
+
+        if media_details1:
+            response.append(f"Details from movie_data1:\n{str(media_details1)}")
+        else:
+            response.append("No details found in `movie_data1`.")
+
+        # Send the combined response
+        await message.reply("\n\n".join(response))
+    except Exception as e:
+        # Handle errors gracefully
+        await message.reply(f"Error: {str(e)}")
 
 
 @Client.on_message(filters.command("duud") & filters.user(ADMINS))
