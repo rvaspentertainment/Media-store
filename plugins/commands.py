@@ -1271,7 +1271,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "language": movie_language
             }
             await db.movie_data.update_one(
-                {"id": user_data["id"]}, {"$set": movie_data}, upsert=True
+                {"id": movie_data["id"]}, {"$set": movie_data}, upsert=True
             )
 
             
