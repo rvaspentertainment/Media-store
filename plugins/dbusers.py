@@ -14,7 +14,8 @@ class Database:
         self.col = self.db.users
         self.grp = self.db.groups
         self.user_data = self.db.user_data
-      
+        self.movie_data1 = self.db.movie_data1
+        self.movie_data = self.db.movie_data
 
 
     def new_user(self, id, name):
