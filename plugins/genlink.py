@@ -49,131 +49,74 @@ from pyrogram.enums import MessageMediaType
 @Client.on_message((filters.document | filters.video | filters.audio) & filters.chat(-1002400439772))
 async def incoming_gen_link(bot, message):
     try:
-        # Notify the user that processing has started
-        await bot.send_message(message.chat.id, "Processing started...")
-
         # Get bot's username
         username = (await bot.get_me()).username
 
         # Determine the media type
+        media, media_type = None, None
         if message.video:
-            media = message.video
-            media_type = "video"
+            media, media_type = message.video, "video"
         elif message.document:
-            media = message.document
-            media_type = "document"
+            media, media_type = message.document, "document"
         elif message.audio:
-            media = message.audio
-            media_type = "audio"
+            media, media_type = message.audio, "audio"
         else:
             raise ValueError("Unsupported media type.")
 
-        await bot.send_message(message.chat.id, f"Media type: {media_type}")
-
-        # Ensure caption exists
-        if not message.caption:
-            raise ValueError("Caption is required in the format: poster-movie_name-release_year-language-user_id-movies_no")
-
-        # Extract details from caption
-        caption_parts = message.caption.strip().split("-")
-        if len(caption_parts) < 6:
-            raise ValueError("Caption format is incorrect. Expected format: poster-movie_name-release_year-movie_language-user_id-movies_no")
-
-        poster, movie_name, release_year, movie_language, user_id, movie_no = caption_parts
-        movies_no = f"{user_id}-{movie_no}"
-
-        await bot.send_message(
-            message.chat.id,
-            f"Caption details extracted:\n"
-            f"Poster: {poster}\nMovie Name: {movie_name}\nRelease Year: {release_year}\n"
-            f"Language: {movie_language}\nMovies No: {movies_no}"
-        )
-
         # Extract file details
         file_id, ref = unpack_new_file_id(media.file_id)
-        string = f'file_{file_id}'
-        outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+        encoded_str = base64.urlsafe_b64encode(f'file_{file_id}'.encode("ascii")).decode().strip("=")
+
+        # Extract caption details
+        if not message.caption or "-" not in message.caption:
+            raise ValueError("Caption format invalid. Expected 'user_id-movies_no'.")
+
+        # Split caption into user_id and movies_no
+        caption_parts = message.caption.strip().split("-", 1)
+        user_id = caption_parts[0].strip()  # First part before "-" is user_id
+        movies_no = message.caption.strip()  # Entire caption is treated as movies_no
 
         # Extract file name, size, and resolution
         file_name = media.file_name.lower() if media.file_name else "unknown"
         file_size = get_size(media.file_size)  # Convert size to readable format
-        resolution = "Unknown Resolution"
-
-        # Define resolution and codec keywords
-        resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "2160p", "4k"]
-        codec_keywords = ["hevc", "x265", "×265", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd"]
-
-        found_resolutions = [res for res in resolution_keywords if res in file_name]
-        found_codecs = [codec for codec in codec_keywords if codec in file_name]
-
-        # Combine resolution and codec if both are found
-        if found_resolutions and found_codecs:
-            resolution = " ".join(found_resolutions + found_codecs).capitalize()
-        elif found_resolutions:
-            resolution = " ".join(found_resolutions).capitalize()
-        elif found_codecs:
-            resolution = " ".join(found_codecs).capitalize()
+        resolution = extract_resolution_and_codec(file_name)
 
         # Prepare the file data
-        file_data = {
-            "id": outstr,
+        movie_data = {
+            "id": user_id,
+            "mid": movies_no,
+            "mfid": encoded_str,
             "resolution": resolution,
-            "size": file_size
+            "size": file_size,
         }
 
-        await bot.send_message(
-            message.chat.id,
-            f"File details:\nID: {file_data['id']}\nResolution: {file_data['resolution']}\nSize: {file_data['size']}"
+        # Update MongoDB
+        await db.movie_data1.update_one(
+            {"id": movie_data["id"]}, {"$push": {"movies": movie_data}}, upsert=True
         )
-
-        # Check if the movies_no already exists
-        existing_movie = await db.files.find_one({"id": user_id, "movie_data": movies_no})
-
-        if existing_movie:
-            # Add the new file_id to the existing movie
-            update_result = await db.user_data.update_one(
-                {"id": user_id, "movie_data": movies_no},
-                {"$addToSet": {"movie_id": file_data}}
-            )
-            await bot.send_message(
-                message.chat.id,
-                f"Existing movie updated. Modified {update_result.modified_count} document(s)."
-            )
-        else:
-            # Create a new movie entry
-            movie_data = {
-                "id": user_id, 
-                "movies_no": movies_no,
-                "movie_id": [file_data],
-                "name": movie_name,
-                "poster_url": poster,
-                "year": release_year,
-                "language": movie_language
-            }
-
-            update_result = await db.files.update_one(
-                {"id": user_id},
-                {"$push": {"movie_data": movie_data}},
-                upsert=True
-            )
-            await bot.send_message(
-                message.chat.id,
-                f"New movie entry created. Modified {update_result.modified_count} document(s)."
-            )
-
-        # Notify target chat
-        await bot.send_message(
-            -1002443600521,
-            f"Movie Updated:\n"
-            f"Name: {movie_name}\nYear: {release_year}\nLanguage: {movie_language}\n"
-            f"Resolution: {resolution}\nSize: {file_size}\nFile ID: {outstr}"
-        )
-
-        await bot.send_message(message.chat.id, "Processing completed successfully.")
-
     except Exception as e:
         # Handle errors gracefully
         await bot.send_message(message.chat.id, f"Error: {str(e)}")
+
+
+def extract_resolution_and_codec(file_name):
+    """Extract resolution and codec information from the file name."""
+    resolution_keywords = ["360p", "480p", "720p", "576p", "1080p", "2160p", "4k"]
+    codec_keywords = ["hevc", "x265", "×265", "hdrip", "dvd rip", "predvd", "hd rip", "dvdrip", "pre dvd"]
+
+    found_resolutions = [res for res in resolution_keywords if res in file_name]
+    found_codecs = [codec for codec in codec_keywords if codec in file_name]
+
+    if found_resolutions and found_codecs:
+        return " ".join(found_resolutions + found_codecs).capitalize()
+    elif found_resolutions:
+        return " ".join(found_resolutions).capitalize()
+    elif found_codecs:
+        return " ".join(found_codecs).capitalize()
+    return "Unknown Resolution"
+
+
+
 @Client.on_message(filters.command(['link', 'plink']) & filters.create(allowed))
 async def gen_link_s(bot, message):
     username = (await bot.get_me()).username
