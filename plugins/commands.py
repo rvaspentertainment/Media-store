@@ -98,24 +98,7 @@ async def check_saved_details1(client, message):
     except Exception as e:
         await message.reply(f"Error: {str(e)}")
 
-@Client.on_message(filters.command("sd") & filters.private)
-async def check_saved_details(client, message):
-    try:
-        # Query to find the specific file
-        media_details = await db.user_data.find_one(
-            {"id": message.from_user.id, "files.movies_no": "591732965-1"},
-            {"files.$": 1}  # Project only the matched file
-        )
-        
-        if media_details and "files" in media_details:
-            # Reply with the details of the matched file
-            file_details = media_details["files"][0]
-            await message.reply(str(file_details))
-        else:
-            await message.reply("No details found for this movie number.")
-    except Exception as e:
-        # Send the error as a reply
-        await message.reply(f"Error: {str(e)}")
+
 
 @Client.on_message(filters.command("duud") & filters.user(ADMINS))
 async def duud(client, message):
@@ -1252,9 +1235,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
             current_movie_no = udb["movie_no"]
             new_movie_no = current_movie_no + 1
             movies_no = f"{query.from_user.id}-{new_movie_no}"
-            caption = f"{poster}-{movie_name}-{release_year}-{movie_language}-{movies_no}"
+            caption = f"{movies_no}"
             await collect_movie_files(client, query.from_user.id, caption)
-     
+            movie_data = {
+                "id": user_id, 
+                "movies_no": movies_no,
+                "name": movie_name,
+                "poster_url": poster,
+                "year": release_year,
+                "language": movie_language
+            }
+            await db.movie_data.update_one(
+                {"id": user_data["id"]}, {"$set": movie_data}, upsert=True
+            )
+
             
             await client.send_message(-1002294034797, f"{user_id}-{movies_no}-{movie_name}-{poster}-{release_year}-{movie_language}")    
             
